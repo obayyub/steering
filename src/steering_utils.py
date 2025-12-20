@@ -13,6 +13,7 @@ from typing import Optional, Union
 import pandas as pd
 import torch
 from steering_vectors import SteeringVector
+from transformers import pipeline
 
 
 @dataclass
@@ -217,88 +218,70 @@ def generate_sweep(
     return pd.concat(dfs, ignore_index=True)
 
 
-def compute_perplexity(
-    model,
-    tokenizer,
-    text: str,
-    steering_vector: Optional[Union[SteeringVector, LabeledSteeringVector]] = None,
-    steering_strength: float = 0.0,
-) -> float:
+# Sentiment analysis using DistilBERT (small, fast, good for sentiment)
+_sentiment_pipeline = None
+
+
+def get_sentiment_pipeline(device: Optional[str] = None):
     """
-    Compute perplexity of text under the model (optionally with steering).
+    Get or create the sentiment analysis pipeline.
+
+    Uses distilbert-base-uncased-finetuned-sst-2-english (67M params).
+    """
+    global _sentiment_pipeline
+    if _sentiment_pipeline is None:
+        _sentiment_pipeline = pipeline(
+            "sentiment-analysis",
+            model="distilbert-base-uncased-finetuned-sst-2-english",
+            device=device,
+        )
+    return _sentiment_pipeline
+
+
+def analyze_sentiment(
+    texts: list[str],
+    device: Optional[str] = None,
+) -> list[dict]:
+    """
+    Analyze sentiment of texts.
 
     Args:
-        model: The language model
-        tokenizer: The tokenizer
-        text: Text to evaluate
-        steering_vector: Optional steering vector
-        steering_strength: Steering multiplier
+        texts: List of texts to analyze
+        device: Device for inference (None=auto, "cpu", "cuda", 0, 1, etc.)
 
     Returns:
-        Perplexity score
+        List of dicts with 'label' (POSITIVE/NEGATIVE) and 'score' (confidence)
     """
-    inputs = tokenizer(text, return_tensors="pt").to(model.device)
-
-    sv = steering_vector
-    if isinstance(sv, LabeledSteeringVector):
-        sv = sv.vector
-
-    with torch.no_grad():
-        if sv is not None and steering_strength != 0:
-            with sv.apply(model, multiplier=steering_strength):
-                outputs = model(**inputs, labels=inputs["input_ids"])
-        else:
-            outputs = model(**inputs, labels=inputs["input_ids"])
-
-    return torch.exp(outputs.loss).item()
+    pipe = get_sentiment_pipeline(device)
+    # Truncate to avoid errors with long texts
+    return pipe(texts, truncation=True, max_length=512)
 
 
-def compute_perplexity_sweep(
-    model,
-    tokenizer,
-    texts: list[str],
-    steering_vector: Union[SteeringVector, LabeledSteeringVector],
-    strengths: Optional[list[float]] = None,
+def analyze_generations(
+    df: pd.DataFrame,
+    generation_column: str = "generation",
+    device: Optional[str] = None,
 ) -> pd.DataFrame:
     """
-    Compute perplexity for multiple texts across steering strengths.
+    Add sentiment analysis to a generations DataFrame.
 
     Args:
-        model: The language model
-        tokenizer: The tokenizer
-        texts: List of texts to evaluate
-        steering_vector: Steering vector to apply
-        strengths: List of steering strengths (default: [-1, 0, 1])
+        df: DataFrame with a generation column (e.g., from generate_sweep)
+        generation_column: Name of column containing generated text
+        device: Device for sentiment model
 
     Returns:
-        DataFrame with columns: label, strength, text, perplexity
+        DataFrame with added columns: sentiment_label, sentiment_score, p_positive
     """
-    if strengths is None:
-        strengths = [-1.0, 0.0, 1.0]
+    texts = df[generation_column].tolist()
+    results = analyze_sentiment(texts, device=device)
 
-    label = (
-        steering_vector.label
-        if isinstance(steering_vector, LabeledSteeringVector)
-        else "unlabeled"
-    )
+    df = df.copy()
+    df["sentiment_label"] = [r["label"] for r in results]
+    df["sentiment_score"] = [r["score"] for r in results]
+    # p_positive: probability of positive sentiment
+    df["p_positive"] = [
+        r["score"] if r["label"] == "POSITIVE" else 1 - r["score"] for r in results
+    ]
 
-    rows = []
-    for text in texts:
-        for strength in strengths:
-            ppl = compute_perplexity(
-                model=model,
-                tokenizer=tokenizer,
-                text=text,
-                steering_vector=steering_vector,
-                steering_strength=strength,
-            )
-            rows.append(
-                {
-                    "label": label,
-                    "strength": strength,
-                    "text": text,
-                    "perplexity": ppl,
-                }
-            )
-
-    return pd.DataFrame(rows)
+    return df

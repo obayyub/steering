@@ -12,8 +12,8 @@ from .steering_utils import (
     generate_with_steering,
     generate_comparison,
     generate_sweep,
-    compute_perplexity,
-    compute_perplexity_sweep,
+    analyze_sentiment,
+    analyze_generations,
 )
 
 __all__ = [
@@ -26,6 +26,6 @@ __all__ = [
     "generate_with_steering",
     "generate_comparison",
     "generate_sweep",
-    "compute_perplexity",
-    "compute_perplexity_sweep",
+    "analyze_sentiment",
+    "analyze_generations",
 ]
