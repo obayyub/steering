@@ -8,9 +8,12 @@ dependencies = [
     "accelerate>=1.12.0",
     "bitsandbytes>=0.49.0",
     "ipykernel>=7.1.0",
+    "matplotlib>=3.8.0",
     "pandas>=2.0.0",
     "steering-vectors>=0.12.2",
     "torch>=2.9.1",
     "tqdm>=4.67.1",
     "transformers>=4.57.3",
 ]
+[MAIN]
+persistent = no
