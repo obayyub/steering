@@ -56,7 +56,7 @@ TEST_PROMPTS = [
     "Describe the customer service you received.",
 ]
 
-STEERING_STRENGTHS = [-1.0, -0.5, -0.25, -0.1, 0.0, 0.1, 0.25, 0.5, 1.0]
+STEERING_STRENGTHS = [-0.5, -0.25, -0.1, -0.05, 0.0, 0.05, 0.1, 0.25, 0.5]
 NUM_REPEATS = 5
 
 
