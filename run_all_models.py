@@ -280,7 +280,8 @@ def run_single_model(
                 batch_prompts.append(prompt)
                 batch_meta.append({"prompt": prompt, "repeat": repeat})
 
-        # Tokenize batch
+        # Tokenize batch (left-pad for decoder-only generation)
+        tokenizer.padding_side = "left"
         inputs = tokenizer(
             batch_prompts,
             return_tensors="pt",
