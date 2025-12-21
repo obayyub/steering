@@ -1,10 +1,4 @@
-"""
-Steering vector extraction from contrastive pairs.
-
-This module extracts steering vectors from language models using contrastive
-activation differences. It's designed to be model-agnostic and work with
-any HuggingFace transformers-compatible model.
-"""
+"""Steering vector extraction from contrastive pairs."""
 
 import json
 import argparse
@@ -25,21 +19,17 @@ class ExtractionConfig:
     data_path: Path
     output_dir: Path
 
-    # Layer configuration
-    layer_start: Optional[int] = None  # None = auto-compute from model
+    layer_start: Optional[int] = None
     layer_end: Optional[int] = None
 
-    # Model loading
     torch_dtype: str = "bfloat16"
     device: str = "cuda"
     load_in_8bit: bool = False
     load_in_4bit: bool = False
 
-    # Extraction settings
     batch_size: int = 4
     max_length: int = 512
 
-    # Prompt templates
     positive_template: str = "Write a positive review: {text}"
     negative_template: str = "Write a negative review: {text}"
 
@@ -57,7 +47,6 @@ class ExtractionConfig:
 
 def load_model_and_tokenizer(config: ExtractionConfig):
     """Load model and tokenizer with appropriate settings."""
-
     print(f"Loading model: {config.model_name}")
 
     model_kwargs = {
@@ -73,10 +62,7 @@ def load_model_and_tokenizer(config: ExtractionConfig):
         model_kwargs["load_in_4bit"] = True
         del model_kwargs["dtype"]
 
-    model = AutoModelForCausalLM.from_pretrained(
-        config.model_name,
-        **model_kwargs
-    )
+    model = AutoModelForCausalLM.from_pretrained(config.model_name, **model_kwargs)
 
     tokenizer = AutoTokenizer.from_pretrained(
         config.model_name,
@@ -91,8 +77,6 @@ def load_model_and_tokenizer(config: ExtractionConfig):
 
 def get_layer_range(model, config: ExtractionConfig) -> tuple[int, int]:
     """Determine layer range for extraction (defaults to middle third)."""
-
-    # Get total number of layers
     if hasattr(model.config, "num_hidden_layers"):
         num_layers = model.config.num_hidden_layers
     elif hasattr(model.config, "n_layer"):
@@ -100,11 +84,9 @@ def get_layer_range(model, config: ExtractionConfig) -> tuple[int, int]:
     else:
         raise ValueError("Could not determine number of layers from model config")
 
-    # Use provided range or default to middle third
     if config.layer_start is not None and config.layer_end is not None:
         return config.layer_start, config.layer_end
 
-    # Middle third of layers
     third = num_layers // 3
     layer_start = third
     layer_end = 2 * third
@@ -116,34 +98,18 @@ def get_layer_range(model, config: ExtractionConfig) -> tuple[int, int]:
 
 def load_contrastive_pairs(config: ExtractionConfig) -> list[dict]:
     """Load contrastive pairs from JSON file."""
-
     with open(config.data_path, encoding="utf-8") as f:
         data = json.load(f)
 
-    pairs = data.get("pairs", data)  # Handle both formats
+    pairs = data.get("pairs", data)
     print(f"Loaded {len(pairs)} contrastive pairs")
 
     return pairs
 
 
 def format_training_data(pairs: list[dict]) -> list[tuple[str, str]]:
-    """
-    Format contrastive pairs for steering vector training.
-
-    Returns list of (positive_text, negative_text) tuples.
-    """
-
-    formatted = []
-
-    for pair in pairs:
-        positive = pair.get("positive", "")
-        negative = pair.get("negative", "")
-
-        # The steering-vectors library expects (positive, negative) pairs
-        # where positive is the direction we want to steer toward
-        formatted.append((positive, negative))
-
-    return formatted
+    """Format contrastive pairs for steering vector training."""
+    return [(pair.get("positive", ""), pair.get("negative", "")) for pair in pairs]
 
 
 def extract_steering_vector(
@@ -153,13 +119,11 @@ def extract_steering_vector(
     config: ExtractionConfig,
 ) -> SteeringVector:
     """Extract steering vector using the steering-vectors library."""
-
     layer_start, layer_end = get_layer_range(model, config)
 
     print(f"Training steering vector on {len(training_data)} pairs...")
     print(f"Layers: {layer_start} to {layer_end}")
 
-    # Train the steering vector
     steering_vector = train_steering_vector(
         model=model,
         tokenizer=tokenizer,
@@ -177,14 +141,11 @@ def save_steering_vector(
     metadata: dict,
 ):
     """Save steering vector and metadata."""
-
     config.output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Create a clean model name for the filename
     model_name_clean = config.model_name.replace("/", "_").replace("-", "_")
     output_path = config.output_dir / f"{model_name_clean}_sentiment.pt"
 
-    # Save the steering vector (layer_activations dict and layer_type)
     save_data = {
         "layer_activations": steering_vector.layer_activations,
         "layer_type": steering_vector.layer_type,
@@ -192,7 +153,6 @@ def save_steering_vector(
     torch.save(save_data, output_path)
     print(f"Saved steering vector to: {output_path}")
 
-    # Save metadata
     metadata_path = config.output_dir / f"{model_name_clean}_sentiment_metadata.json"
     with open(metadata_path, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
@@ -207,66 +167,46 @@ def main():
         description="Extract steering vectors from contrastive pairs"
     )
 
-    # Required arguments
     parser.add_argument(
-        "--model",
-        type=str,
-        required=True,
-        help="HuggingFace model name or path (e.g., Qwen/Qwen2.5-0.5B)"
+        "--model", type=str, required=True,
+        help="HuggingFace model name or path"
     )
     parser.add_argument(
-        "--data",
-        type=str,
-        required=True,
+        "--data", type=str, required=True,
         help="Path to contrastive pairs JSON file"
     )
-
-    # Optional arguments
     parser.add_argument(
-        "--output-dir",
-        type=str,
-        default="results",
+        "--output-dir", type=str, default="results",
         help="Directory to save steering vectors"
     )
     parser.add_argument(
-        "--layer-start",
-        type=int,
-        default=None,
-        help="Start layer for extraction (default: auto)"
+        "--layer-start", type=int, default=None,
+        help="Start layer for extraction"
     )
     parser.add_argument(
-        "--layer-end",
-        type=int,
-        default=None,
-        help="End layer for extraction (default: auto)"
+        "--layer-end", type=int, default=None,
+        help="End layer for extraction"
     )
     parser.add_argument(
-        "--dtype",
-        type=str,
-        default="bfloat16",
+        "--dtype", type=str, default="bfloat16",
         choices=["float32", "float16", "bfloat16"],
         help="Model dtype"
     )
     parser.add_argument(
-        "--device",
-        type=str,
-        default="cuda",
-        help="Device to use (cuda, cpu, auto)"
+        "--device", type=str, default="cuda",
+        help="Device to use"
     )
     parser.add_argument(
-        "--load-in-8bit",
-        action="store_true",
+        "--load-in-8bit", action="store_true",
         help="Load model in 8-bit precision"
     )
     parser.add_argument(
-        "--load-in-4bit",
-        action="store_true",
+        "--load-in-4bit", action="store_true",
         help="Load model in 4-bit precision"
     )
 
     args = parser.parse_args()
 
-    # Build configuration
     config = ExtractionConfig(
         model_name=args.model,
         data_path=args.data,
@@ -279,17 +219,12 @@ def main():
         load_in_4bit=args.load_in_4bit,
     )
 
-    # Load model and tokenizer
     model, tokenizer = load_model_and_tokenizer(config)
-
-    # Get layer range for metadata
     layer_start, layer_end = get_layer_range(model, config)
 
-    # Load and format data
     pairs = load_contrastive_pairs(config)
     training_data = format_training_data(pairs)
 
-    # Extract steering vector
     steering_vector = extract_steering_vector(
         model=model,
         tokenizer=tokenizer,
@@ -297,7 +232,6 @@ def main():
         config=config,
     )
 
-    # Prepare metadata
     metadata = {
         "model_name": config.model_name,
         "concept": "sentiment",
@@ -309,7 +243,6 @@ def main():
         "dtype": config.torch_dtype,
     }
 
-    # Save results
     output_path = save_steering_vector(steering_vector, config, metadata)
 
     print("\nExtraction complete!")
