@@ -23,7 +23,6 @@ from src import (
     load_model_and_tokenizer,
     extract_steering_vector,
     load_steering_vector,
-    generate_with_steering,
     analyze_generations,
 )
 from src.extract_vectors import (
@@ -259,42 +258,69 @@ def run_single_model(
     sv_path = save_steering_vector(steering_vector, config, metadata)
     sv = load_steering_vector(sv_path)
 
-    # Phase 4: Generate with steering
+    # Phase 4: Generate with steering (batched by strength)
     total_gens = len(TEST_PROMPTS) * len(STEERING_STRENGTHS) * NUM_REPEATS
-    tracker.start_phase(f"Generating ({total_gens} samples)")
+    batch_size = len(TEST_PROMPTS) * NUM_REPEATS  # All prompts × repeats per strength
+    tracker.start_phase(f"Generating ({total_gens} samples, batch_size={batch_size})")
 
     rows = []
     pbar = tqdm(
-        total=total_gens,
+        total=len(STEERING_STRENGTHS),
         desc=f"{model_size} generating",
-        unit="gen",
+        unit="batch",
         leave=False,
     )
 
-    for prompt in TEST_PROMPTS:
-        for strength in STEERING_STRENGTHS:
+    for strength in STEERING_STRENGTHS:
+        # Build batch: all prompts × all repeats
+        batch_prompts = []
+        batch_meta = []
+        for prompt in TEST_PROMPTS:
             for repeat in range(NUM_REPEATS):
-                generation = generate_with_steering(
-                    model=model,
-                    tokenizer=tokenizer,
-                    prompt=prompt,
-                    steering_vector=sv,
-                    steering_strength=strength,
-                    max_new_tokens=128,
-                    temperature=0.7,
-                    do_sample=True,
-                )
-                rows.append({
-                    "model": model_name,
-                    "model_size": model_size,
-                    "num_layers": num_layers,
-                    "label": sv.label,
-                    "strength": strength,
-                    "prompt": prompt,
-                    "repeat": repeat,
-                    "generation": generation,
-                })
-                pbar.update(1)
+                batch_prompts.append(prompt)
+                batch_meta.append({"prompt": prompt, "repeat": repeat})
+
+        # Tokenize batch
+        inputs = tokenizer(
+            batch_prompts,
+            return_tensors="pt",
+            padding=True,
+            truncation=True,
+        ).to(model.device)
+
+        # Generate with steering
+        gen_kwargs = {
+            "max_new_tokens": 128,
+            "temperature": 0.7,
+            "do_sample": True,
+            "pad_token_id": tokenizer.pad_token_id,
+        }
+
+        if strength != 0:
+            with sv.apply(model, multiplier=strength):
+                outputs = model.generate(**inputs, **gen_kwargs)
+        else:
+            outputs = model.generate(**inputs, **gen_kwargs)
+
+        # Decode outputs
+        input_len = inputs["input_ids"].shape[1]
+        for i, output in enumerate(outputs):
+            generation = tokenizer.decode(
+                output[input_len:],
+                skip_special_tokens=True,
+            )
+            rows.append({
+                "model": model_name,
+                "model_size": model_size,
+                "num_layers": num_layers,
+                "label": sv.label,
+                "strength": strength,
+                "prompt": batch_meta[i]["prompt"],
+                "repeat": batch_meta[i]["repeat"],
+                "generation": generation,
+            })
+
+        pbar.update(1)
 
     pbar.close()
     df = pd.DataFrame(rows)
