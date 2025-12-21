@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""
-Run steering vector experiments across all Qwen3 model sizes.
-
-Usage:
-    python run_all_models.py
-    python run_all_models.py --models 0.6B 1.7B  # specific sizes only
-"""
+"""Run steering vector experiments across all Qwen3 model sizes."""
 
 import argparse
 import gc
@@ -13,6 +7,7 @@ import json
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Optional
 
 import pandas as pd
 import torch
@@ -61,56 +56,41 @@ NUM_REPEATS = 5
 
 
 def format_duration(seconds: float) -> str:
-    """Format seconds as human-readable duration."""
     if seconds < 60:
         return f"{seconds:.1f}s"
     elif seconds < 3600:
-        mins = int(seconds // 60)
-        secs = int(seconds % 60)
-        return f"{mins}m {secs}s"
+        return f"{int(seconds // 60)}m {int(seconds % 60)}s"
     else:
-        hours = int(seconds // 3600)
-        mins = int((seconds % 3600) // 60)
-        return f"{hours}h {mins}m"
+        return f"{int(seconds // 3600)}h {int((seconds % 3600) // 60)}m"
 
 
 def print_status(msg: str, indent: int = 0):
-    """Print timestamped status message."""
     timestamp = datetime.now().strftime("%H:%M:%S")
-    prefix = "  " * indent
-    print(f"[{timestamp}] {prefix}{msg}")
-
-
-def print_phase(phase: str, model_size: str):
-    """Print phase header."""
-    print(f"\n{'─'*50}")
-    print(f"  {model_size}: {phase}")
-    print(f"{'─'*50}")
+    print(f"[{timestamp}] {'  ' * indent}{msg}")
 
 
 def clear_memory():
-    """Aggressively clear GPU memory."""
     gc.collect()
     torch.cuda.empty_cache()
     torch.cuda.synchronize()
 
 
 def get_gpu_memory_used() -> str:
-    """Get current GPU memory usage across all devices."""
-    if torch.cuda.is_available():
-        num_gpus = torch.cuda.device_count()
-        if num_gpus == 1:
-            used = torch.cuda.memory_allocated(0) / 1024**3
-            total = torch.cuda.get_device_properties(0).total_memory / 1024**3
-            return f"{used:.1f}/{total:.1f} GB"
-        else:
-            parts = []
-            for i in range(num_gpus):
-                used = torch.cuda.memory_allocated(i) / 1024**3
-                total = torch.cuda.get_device_properties(i).total_memory / 1024**3
-                parts.append(f"GPU{i}: {used:.1f}/{total:.1f}")
-            return " | ".join(parts)
-    return "N/A"
+    if not torch.cuda.is_available():
+        return "N/A"
+
+    num_gpus = torch.cuda.device_count()
+    if num_gpus == 1:
+        used = torch.cuda.memory_allocated(0) / 1024**3
+        total = torch.cuda.get_device_properties(0).total_memory / 1024**3
+        return f"{used:.1f}/{total:.1f} GB"
+
+    parts = []
+    for i in range(num_gpus):
+        used = torch.cuda.memory_allocated(i) / 1024**3
+        total = torch.cuda.get_device_properties(i).total_memory / 1024**3
+        parts.append(f"GPU{i}: {used:.1f}/{total:.1f}")
+    return " | ".join(parts)
 
 
 class ExperimentTracker:
@@ -124,28 +104,27 @@ class ExperimentTracker:
         self.phase_times: dict[str, dict[str, float]] = {}
         self.experiment_start = time.time()
         self.results_so_far: list[dict] = []
+        self.current_model: Optional[str] = None
+        self.current_model_start: Optional[float] = None
+        self.phase_start: Optional[float] = None
 
     def start_model(self, size: str):
-        """Mark start of a model run."""
         self.current_model = size
         self.current_model_start = time.time()
         self.phase_times[size] = {}
 
+    def start_phase(self, phase: str):
+        self.phase_start = time.time()
+        print_status(f"-> {phase}...", indent=1)
+
     def end_phase(self, phase: str):
-        """Record end of a phase."""
-        if not hasattr(self, 'phase_start'):
+        if self.phase_start is None:
             return
         elapsed = time.time() - self.phase_start
         self.phase_times[self.current_model][phase] = elapsed
-        print_status(f"✓ {phase} ({format_duration(elapsed)})", indent=1)
+        print_status(f"Done ({format_duration(elapsed)})", indent=1)
 
-    def start_phase(self, phase: str):
-        """Mark start of a phase."""
-        self.phase_start = time.time()
-        print_status(f"→ {phase}...", indent=1)
-
-    def end_model(self, result: dict = None):
-        """Mark end of a model run."""
+    def end_model(self, result: Optional[dict] = None):
         elapsed = time.time() - self.current_model_start
         self.model_times[self.current_model] = elapsed
         self.completed_models += 1
@@ -156,15 +135,14 @@ class ExperimentTracker:
         self._print_model_summary(elapsed)
 
     def _print_model_summary(self, elapsed: float):
-        """Print summary after completing a model."""
         remaining = self.total_models - self.completed_models
         avg_time = sum(self.model_times.values()) / len(self.model_times)
         eta_seconds = avg_time * remaining
         total_elapsed = time.time() - self.experiment_start
 
-        print(f"\n{'━'*60}")
+        print(f"\n{'='*60}")
         print(f"  {self.current_model} COMPLETE")
-        print(f"{'━'*60}")
+        print(f"{'='*60}")
         print(f"  Time for this model:  {format_duration(elapsed)}")
         print(f"  Total elapsed:        {format_duration(total_elapsed)}")
         print(f"  Progress:             {self.completed_models}/{self.total_models} models")
@@ -177,26 +155,24 @@ class ExperimentTracker:
 
         print(f"  GPU memory:           {get_gpu_memory_used()}")
 
-        # Show results so far
         if self.results_so_far:
-            print(f"\n  Results so far (delta @ strength=0.5):")
+            print("\n  Results so far (delta @ strength=0.5):")
             for r in self.results_so_far:
                 delta = r.get("delta_at_0.5", "N/A")
                 if isinstance(delta, float):
                     print(f"    {r['model_size']:>5}: {delta:+.3f}")
 
     def print_final_summary(self):
-        """Print final experiment summary."""
         total_time = time.time() - self.experiment_start
 
-        print(f"\n{'═'*60}")
-        print(f"  EXPERIMENT COMPLETE")
-        print(f"{'═'*60}")
+        print(f"\n{'='*60}")
+        print("  EXPERIMENT COMPLETE")
+        print(f"{'='*60}")
         print(f"  Total time:     {format_duration(total_time)}")
         print(f"  Models run:     {self.completed_models}/{self.total_models}")
 
         if self.model_times:
-            print(f"\n  Time per model:")
+            print("\n  Time per model:")
             for size, t in self.model_times.items():
                 print(f"    {size:>5}: {format_duration(t)}")
 
@@ -207,19 +183,17 @@ def run_single_model(
     data_path: Path,
     output_dir: Path,
     tracker: ExperimentTracker,
-):
+) -> dict:
     """Run extraction and evaluation for one model."""
-
     tracker.start_model(model_size)
 
-    print(f"\n{'═'*60}")
+    print(f"\n{'='*60}")
     print(f"  MODEL: {model_size} ({model_name})")
     print(f"  GPU Memory: {get_gpu_memory_used()}")
-    print(f"{'═'*60}")
+    print(f"{'='*60}")
 
     model_name_clean = model_name.replace("/", "_").replace("-", "_")
 
-    # Config (device="auto" shards across all available GPUs)
     config = ExtractionConfig(
         model_name=model_name,
         data_path=data_path,
@@ -228,21 +202,20 @@ def run_single_model(
         device="auto",
     )
 
-    # Phase 1: Load model
+    # Load model
     tracker.start_phase("Loading model")
     model, tokenizer = load_model_and_tokenizer(config)
     num_layers = model.config.num_hidden_layers
     tracker.end_phase("Loading model")
-    print_status(f"Layers: {num_layers}, dtype: {model.dtype}, GPU: {get_gpu_memory_used()}", indent=2)
+    print_status(f"Layers: {num_layers}, dtype: {model.dtype}", indent=2)
 
-    # Phase 2: Load data
+    # Load data
     tracker.start_phase("Loading contrastive pairs")
     pairs = load_contrastive_pairs(config)
     training_data = format_training_data(pairs)
     tracker.end_phase("Loading contrastive pairs")
-    print_status(f"Pairs: {len(training_data)}", indent=2)
 
-    # Phase 3: Extract steering vector
+    # Extract steering vector
     tracker.start_phase("Extracting steering vector")
     layer_start, layer_end = get_layer_range(model, config)
     steering_vector = extract_steering_vector(
@@ -252,9 +225,7 @@ def run_single_model(
         config=config,
     )
     tracker.end_phase("Extracting steering vector")
-    print_status(f"Layers {layer_start}-{layer_end}", indent=2)
 
-    # Save steering vector
     metadata = {
         "model_name": model_name,
         "model_size": model_size,
@@ -268,45 +239,25 @@ def run_single_model(
     sv_path = save_steering_vector(steering_vector, config, metadata)
     sv = load_steering_vector(sv_path)
 
-    # Phase 4: Generate with steering (batched by strength)
+    # Generate with steering
     total_gens = len(TEST_PROMPTS) * len(STEERING_STRENGTHS) * NUM_REPEATS
-    batch_size = len(TEST_PROMPTS) * NUM_REPEATS  # All prompts × repeats per strength
-    tracker.start_phase(f"Generating ({total_gens} samples, batch_size={batch_size})")
+    tracker.start_phase(f"Generating ({total_gens} samples)")
 
     rows = []
-    pbar = tqdm(
-        total=len(STEERING_STRENGTHS),
-        desc=f"{model_size} generating",
-        unit="batch",
-        leave=False,
-    )
+    pbar = tqdm(total=len(STEERING_STRENGTHS), desc=f"{model_size}", unit="batch", leave=False)
 
     for strength in STEERING_STRENGTHS:
-        # Build batch: all prompts × all repeats, formatted with chat template
         batch_prompts = []
         batch_meta = []
         for prompt in TEST_PROMPTS:
             for repeat in range(NUM_REPEATS):
-                # Format with chat template, thinking disabled
-                formatted = format_chat_prompt(
-                    tokenizer,
-                    prompt,
-                    system_prompt=None,
-                    enable_thinking=False,
-                )
+                formatted = format_chat_prompt(tokenizer, prompt, enable_thinking=False)
                 batch_prompts.append(formatted)
                 batch_meta.append({"prompt": prompt, "repeat": repeat})
 
-        # Tokenize batch (left-pad for decoder-only generation)
         tokenizer.padding_side = "left"
-        inputs = tokenizer(
-            batch_prompts,
-            return_tensors="pt",
-            padding=True,
-            truncation=True,
-        ).to(model.device)
+        inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True, truncation=True).to(model.device)
 
-        # Generate with steering
         gen_kwargs = {
             "max_new_tokens": 128,
             "temperature": 0.7,
@@ -320,13 +271,9 @@ def run_single_model(
         else:
             outputs = model.generate(**inputs, **gen_kwargs)
 
-        # Decode outputs
         input_len = inputs["input_ids"].shape[1]
         for i, output in enumerate(outputs):
-            generation = tokenizer.decode(
-                output[input_len:],
-                skip_special_tokens=True,
-            )
+            generation = tokenizer.decode(output[input_len:], skip_special_tokens=True)
             rows.append({
                 "model": model_name,
                 "model_size": model_size,
@@ -344,22 +291,18 @@ def run_single_model(
     df = pd.DataFrame(rows)
     tracker.end_phase(f"Generating ({total_gens} samples)")
 
-    # Phase 5: Unload model
+    # Unload model
     tracker.start_phase("Unloading model")
-    del model
-    del tokenizer
-    del steering_vector
-    del sv
+    del model, tokenizer, steering_vector, sv
     clear_memory()
     tracker.end_phase("Unloading model")
-    print_status(f"GPU after unload: {get_gpu_memory_used()}", indent=2)
 
-    # Phase 6: Analyze sentiment
+    # Analyze sentiment
     tracker.start_phase("Analyzing sentiment")
     df = analyze_generations(df, device="cuda")
     tracker.end_phase("Analyzing sentiment")
 
-    # Save raw results
+    # Save results
     results_path = output_dir / f"{model_name_clean}_generations.csv"
     df.to_csv(results_path, index=False)
     print_status(f"Saved: {results_path}", indent=1)
@@ -375,16 +318,12 @@ def run_single_model(
 
     summary_path = output_dir / f"{model_name_clean}_summary.csv"
     summary.to_csv(summary_path, index=False)
-    print_status(f"Saved: {summary_path}", indent=1)
 
-    # Get delta at strength 0.5 for tracking
     delta_0_5 = summary[summary["strength"] == 0.5]["delta_from_baseline"].values[0]
 
-    # Print summary table
     print(f"\n  {model_size} Results:")
     print("  " + summary[["strength", "mean_p_positive", "delta_from_baseline"]].to_string(index=False).replace("\n", "\n  "))
 
-    # Clear sentiment model
     clear_memory()
 
     result = {
@@ -397,54 +336,33 @@ def run_single_model(
     }
 
     tracker.end_model(result)
-
     return result
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run steering experiments on all Qwen3 sizes")
-    parser.add_argument(
-        "--models",
-        nargs="+",
-        default=list(QWEN3_MODELS.keys()),
-        choices=list(QWEN3_MODELS.keys()),
-        help="Model sizes to run (default: all)",
-    )
-    parser.add_argument(
-        "--data",
-        type=str,
-        default="data/contrastive_pairs.json",
-        help="Path to contrastive pairs",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=str,
-        default="results",
-        help="Output directory",
-    )
+    parser = argparse.ArgumentParser(description="Run steering experiments on Qwen3 models")
+    parser.add_argument("--models", nargs="+", default=list(QWEN3_MODELS.keys()), choices=list(QWEN3_MODELS.keys()))
+    parser.add_argument("--data", type=str, default="data/contrastive_pairs.json")
+    parser.add_argument("--output-dir", type=str, default="results")
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     data_path = Path(args.data)
 
-    # Print experiment config
     total_gens_per_model = len(TEST_PROMPTS) * len(STEERING_STRENGTHS) * NUM_REPEATS
     total_gens = total_gens_per_model * len(args.models)
 
-    print("\n" + "═"*60)
+    print("\n" + "="*60)
     print("  STEERING VECTOR EXPERIMENT")
-    print("═"*60)
+    print("="*60)
     print(f"  Start time:    {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"  Models:        {', '.join(args.models)}")
     print(f"  Data:          {data_path}")
     print(f"  Output:        {output_dir}")
-    print(f"  Prompts:       {len(TEST_PROMPTS)}")
-    print(f"  Strengths:     {len(STEERING_STRENGTHS)} ({min(STEERING_STRENGTHS)} to {max(STEERING_STRENGTHS)})")
-    print(f"  Repeats:       {NUM_REPEATS}")
     print(f"  Total gens:    {total_gens} ({total_gens_per_model} per model)")
     print(f"  GPU:           {get_gpu_memory_used()}")
-    print("═"*60 + "\n")
+    print("="*60 + "\n")
 
     tracker = ExperimentTracker(args.models)
     all_results = []
@@ -461,40 +379,28 @@ def main():
                 tracker=tracker,
             )
             all_results.append(result)
-
-            # Load and accumulate summary
-            summary_df = pd.read_csv(result["summary_path"])
-            all_summaries.append(summary_df)
+            all_summaries.append(pd.read_csv(result["summary_path"]))
 
         except Exception as e:
-            print(f"\n❌ ERROR with {size}: {e}")
+            print(f"\nERROR with {size}: {e}")
             import traceback
             traceback.print_exc()
             clear_memory()
             continue
 
-    # Combine all summaries
     if all_summaries:
         combined = pd.concat(all_summaries, ignore_index=True)
         combined_path = output_dir / "all_models_summary.csv"
         combined.to_csv(combined_path, index=False)
 
-        # Print final comparison
-        print("\n" + "═"*60)
+        print("\n" + "="*60)
         print("  FINAL RESULTS: Delta P(positive) by model size")
-        print("═"*60)
-        pivot = combined.pivot_table(
-            index="model_size",
-            columns="strength",
-            values="delta_from_baseline",
-            aggfunc="mean"
-        )
-        # Sort by model size (numeric)
+        print("="*60)
+        pivot = combined.pivot_table(index="model_size", columns="strength", values="delta_from_baseline", aggfunc="mean")
         size_order = ["0.6B", "1.7B", "4B", "8B", "14B", "32B"]
         pivot = pivot.reindex([s for s in size_order if s in pivot.index])
         print(pivot.round(3).to_string())
 
-    # Save run metadata
     meta = {
         "timestamp": datetime.now().isoformat(),
         "models": args.models,
@@ -504,12 +410,11 @@ def main():
         "results": all_results,
         "timing": tracker.model_times,
     }
-    meta_path = output_dir / "experiment_metadata.json"
-    with open(meta_path, "w", encoding="utf-8") as f:
+    with open(output_dir / "experiment_metadata.json", "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2)
 
     tracker.print_final_summary()
-    print(f"\n✓ All results saved to {output_dir}/")
+    print(f"\nAll results saved to {output_dir}/")
 
 
 if __name__ == "__main__":
