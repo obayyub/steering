@@ -61,17 +61,17 @@ def load_model_and_tokenizer(config: ExtractionConfig):
     print(f"Loading model: {config.model_name}")
 
     model_kwargs = {
-        "torch_dtype": config.torch_dtype_resolved,
+        "dtype": config.torch_dtype_resolved,
         "device_map": config.device,
         "trust_remote_code": True,
     }
 
     if config.load_in_8bit:
         model_kwargs["load_in_8bit"] = True
-        del model_kwargs["torch_dtype"]
+        del model_kwargs["dtype"]
     elif config.load_in_4bit:
         model_kwargs["load_in_4bit"] = True
-        del model_kwargs["torch_dtype"]
+        del model_kwargs["dtype"]
 
     model = AutoModelForCausalLM.from_pretrained(
         config.model_name,

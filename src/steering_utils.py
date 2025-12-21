@@ -74,6 +74,48 @@ def load_steering_metadata(path: Union[str, Path]) -> dict:
     return {}
 
 
+def format_chat_prompt(
+    tokenizer,
+    prompt: str,
+    system_prompt: Optional[str] = None,
+    enable_thinking: bool = False,
+) -> str:
+    """
+    Format a prompt using the tokenizer's chat template.
+
+    Args:
+        tokenizer: The tokenizer with chat template
+        prompt: User prompt
+        system_prompt: Optional system message
+        enable_thinking: Whether to enable thinking mode (Qwen3)
+
+    Returns:
+        Formatted prompt string
+    """
+    messages = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+
+    # Check if tokenizer supports enable_thinking parameter
+    try:
+        formatted = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=enable_thinking,
+        )
+    except TypeError:
+        # Fallback for tokenizers that don't support enable_thinking
+        formatted = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+
+    return formatted
+
+
 def generate_with_steering(
     model,
     tokenizer,
@@ -83,6 +125,9 @@ def generate_with_steering(
     max_new_tokens: int = 256,
     temperature: float = 0.7,
     do_sample: bool = True,
+    use_chat_template: bool = True,
+    enable_thinking: bool = False,
+    system_prompt: Optional[str] = None,
 ) -> str:
     """
     Generate text with optional steering vector applied.
@@ -96,11 +141,22 @@ def generate_with_steering(
         max_new_tokens: Maximum tokens to generate
         temperature: Sampling temperature
         do_sample: Whether to sample or use greedy decoding
+        use_chat_template: Whether to apply chat template formatting
+        enable_thinking: Whether to enable thinking mode (Qwen3, default False)
+        system_prompt: Optional system message
 
     Returns:
         Generated text (excluding prompt)
     """
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    # Format prompt
+    if use_chat_template and hasattr(tokenizer, "apply_chat_template"):
+        formatted_prompt = format_chat_prompt(
+            tokenizer, prompt, system_prompt, enable_thinking
+        )
+    else:
+        formatted_prompt = prompt
+
+    inputs = tokenizer(formatted_prompt, return_tensors="pt").to(model.device)
 
     gen_kwargs = {
         "max_new_tokens": max_new_tokens,

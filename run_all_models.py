@@ -25,6 +25,7 @@ from src import (
     load_steering_vector,
     analyze_generations,
 )
+from src.steering_utils import format_chat_prompt
 from src.extract_vectors import (
     load_contrastive_pairs,
     format_training_data,
@@ -281,12 +282,19 @@ def run_single_model(
     )
 
     for strength in STEERING_STRENGTHS:
-        # Build batch: all prompts × all repeats
+        # Build batch: all prompts × all repeats, formatted with chat template
         batch_prompts = []
         batch_meta = []
         for prompt in TEST_PROMPTS:
             for repeat in range(NUM_REPEATS):
-                batch_prompts.append(prompt)
+                # Format with chat template, thinking disabled
+                formatted = format_chat_prompt(
+                    tokenizer,
+                    prompt,
+                    system_prompt=None,
+                    enable_thinking=False,
+                )
+                batch_prompts.append(formatted)
                 batch_meta.append({"prompt": prompt, "repeat": repeat})
 
         # Tokenize batch (left-pad for decoder-only generation)
