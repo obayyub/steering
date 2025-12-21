@@ -95,11 +95,20 @@ def clear_memory():
 
 
 def get_gpu_memory_used() -> str:
-    """Get current GPU memory usage."""
+    """Get current GPU memory usage across all devices."""
     if torch.cuda.is_available():
-        used = torch.cuda.memory_allocated() / 1024**3
-        total = torch.cuda.get_device_properties(0).total_memory / 1024**3
-        return f"{used:.1f}/{total:.1f} GB"
+        num_gpus = torch.cuda.device_count()
+        if num_gpus == 1:
+            used = torch.cuda.memory_allocated(0) / 1024**3
+            total = torch.cuda.get_device_properties(0).total_memory / 1024**3
+            return f"{used:.1f}/{total:.1f} GB"
+        else:
+            parts = []
+            for i in range(num_gpus):
+                used = torch.cuda.memory_allocated(i) / 1024**3
+                total = torch.cuda.get_device_properties(i).total_memory / 1024**3
+                parts.append(f"GPU{i}: {used:.1f}/{total:.1f}")
+            return " | ".join(parts)
     return "N/A"
 
 
@@ -209,13 +218,13 @@ def run_single_model(
 
     model_name_clean = model_name.replace("/", "_").replace("-", "_")
 
-    # Config
+    # Config (device="auto" shards across all available GPUs)
     config = ExtractionConfig(
         model_name=model_name,
         data_path=data_path,
         output_dir=output_dir,
         torch_dtype="bfloat16",
-        device="cuda",
+        device="auto",
     )
 
     # Phase 1: Load model
