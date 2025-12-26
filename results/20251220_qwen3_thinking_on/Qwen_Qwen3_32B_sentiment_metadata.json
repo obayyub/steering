@@ -1,0 +1,10 @@
+{
+  "model_name": "Qwen/Qwen3-32B",
+  "model_size": "32B",
+  "concept": "sentiment",
+  "direction": "positive",
+  "num_pairs": 134,
+  "layer_start": 21,
+  "layer_end": 42,
+  "num_layers": 64
+}

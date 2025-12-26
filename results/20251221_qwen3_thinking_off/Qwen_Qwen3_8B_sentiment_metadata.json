@@ -1,0 +1,10 @@
+{
+  "model_name": "Qwen/Qwen3-8B",
+  "model_size": "8B",
+  "concept": "sentiment",
+  "direction": "positive",
+  "num_pairs": 134,
+  "layer_start": 12,
+  "layer_end": 24,
+  "num_layers": 36
+}

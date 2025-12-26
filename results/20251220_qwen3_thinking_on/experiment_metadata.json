@@ -1,0 +1,93 @@
+{
+  "timestamp": "2025-12-21T04:24:28.768014",
+  "models": [
+    "0.6B",
+    "1.7B",
+    "4B",
+    "8B",
+    "14B",
+    "32B"
+  ],
+  "prompts": [
+    "Write a review of a restaurant you visited recently.",
+    "Describe your experience with the new smartphone.",
+    "Tell me about a movie you watched.",
+    "What do you think about the local coffee shop?",
+    "Share your thoughts on your recent hotel stay.",
+    "Describe a book you finished reading.",
+    "What did you think of the concert last night?",
+    "Tell me about your experience at the gym.",
+    "How was your flight to the destination?",
+    "Describe the customer service you received."
+  ],
+  "strengths": [
+    -1.0,
+    -0.5,
+    -0.25,
+    -0.1,
+    0.0,
+    0.1,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "num_repeats": 5,
+  "results": [
+    {
+      "model": "Qwen/Qwen3-0.6B",
+      "model_size": "0.6B",
+      "num_layers": 28,
+      "results_path": "results/Qwen_Qwen3_0.6B_generations.csv",
+      "summary_path": "results/Qwen_Qwen3_0.6B_summary.csv",
+      "delta_at_0.5": 0.4880954718589783
+    },
+    {
+      "model": "Qwen/Qwen3-1.7B",
+      "model_size": "1.7B",
+      "num_layers": 28,
+      "results_path": "results/Qwen_Qwen3_1.7B_generations.csv",
+      "summary_path": "results/Qwen_Qwen3_1.7B_summary.csv",
+      "delta_at_0.5": 0.46778644919395446
+    },
+    {
+      "model": "Qwen/Qwen3-4B",
+      "model_size": "4B",
+      "num_layers": 36,
+      "results_path": "results/Qwen_Qwen3_4B_generations.csv",
+      "summary_path": "results/Qwen_Qwen3_4B_summary.csv",
+      "delta_at_0.5": 0.30040526390075684
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "model_size": "8B",
+      "num_layers": 36,
+      "results_path": "results/Qwen_Qwen3_8B_generations.csv",
+      "summary_path": "results/Qwen_Qwen3_8B_summary.csv",
+      "delta_at_0.5": 0.24362336874008184
+    },
+    {
+      "model": "Qwen/Qwen3-14B",
+      "model_size": "14B",
+      "num_layers": 40,
+      "results_path": "results/Qwen_Qwen3_14B_generations.csv",
+      "summary_path": "results/Qwen_Qwen3_14B_summary.csv",
+      "delta_at_0.5": 0.42082552194595346
+    },
+    {
+      "model": "Qwen/Qwen3-32B",
+      "model_size": "32B",
+      "num_layers": 64,
+      "results_path": "results/Qwen_Qwen3_32B_generations.csv",
+      "summary_path": "results/Qwen_Qwen3_32B_summary.csv",
+      "delta_at_0.5": 0.2502342712879181
+    }
+  ],
+  "timing": {
+    "0.6B": 42.07691144943237,
+    "1.7B": 41.57349872589111,
+    "4B": 52.11129355430603,
+    "8B": 53.9555025100708,
+    "14B": 62.146400690078735,
+    "32B": 106.76446056365967
+  }
+}

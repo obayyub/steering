@@ -1,0 +1,10 @@
+{
+  "model_name": "Qwen/Qwen3-4B",
+  "model_size": "4B",
+  "concept": "sentiment",
+  "direction": "positive",
+  "num_pairs": 134,
+  "layer_start": 12,
+  "layer_end": 24,
+  "num_layers": 36
+}
