@@ -233,6 +233,7 @@ def run_experiment(
             tokenizer=tokenizer,
             training_samples=training_data,
             layers=list(range(l_start, l_end + 1)),
+            read_token_index=-2,  # Extract from A/B token, not the closing )
             show_progress=True,
         )
 

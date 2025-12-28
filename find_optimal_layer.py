@@ -262,6 +262,7 @@ def find_optimal_layer(
             tokenizer=tokenizer,
             training_samples=training_data,
             layers=[layer],
+            read_token_index=-2,  # Extract from A/B token, not the closing )
             show_progress=False,
         )
 

@@ -180,6 +180,7 @@ def extract_steering_vector(
         tokenizer=tokenizer,
         training_samples=training_data,
         layers=list(range(layer_start, layer_end + 1)),
+        read_token_index=-2,  # Extract from answer token (A/B), not closing )
         show_progress=True,
     )
 
