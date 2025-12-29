@@ -61,21 +61,29 @@ def run_full_benchmark_experiment(
             "name": "gsm8k",
             "prompts": "data/benchmarks/gsm8k_eval.json",
             "max_new_tokens": 128,
+            "temperature": 0.0,  # Greedy for deterministic capability eval
+            "num_repeats": 1,  # No repeats needed for greedy
         },
         {
             "name": "triviaqa",
             "prompts": "data/benchmarks/triviaqa_eval.json",
             "max_new_tokens": 64,
+            "temperature": 0.0,  # Greedy for deterministic capability eval
+            "num_repeats": 1,  # No repeats needed for greedy
         },
         {
             "name": "behavioral",
             "prompts": "data/benchmarks/behavioral_eval.json",
             "max_new_tokens": 32,
+            "temperature": 0.0,  # Greedy for deterministic capability eval
+            "num_repeats": 1,  # No repeats needed for greedy
         },
         {
             "name": "open_ended",
             "prompts": "data/open_ended_prompts.json",
             "max_new_tokens": 256,
+            "temperature": 0.7,  # Sampling for diverse confounder discovery
+            "num_repeats": num_repeats,  # Use user-specified repeats for sampling
         },
     ]
 
@@ -145,7 +153,8 @@ def run_full_benchmark_experiment(
                     steering_vector_path=vector_path,
                     strengths=strengths,
                     max_new_tokens=benchmark["max_new_tokens"],
-                    num_repeats=num_repeats,
+                    temperature=benchmark["temperature"],
+                    num_repeats=benchmark["num_repeats"],
                     dtype=dtype,
                 )
                 print(f"    → Saved to {output_path}")

@@ -40,7 +40,7 @@ def generate_with_steering(
     steering_vector: Optional[SteeringVector] = None,
     strength: float = 0.0,
     max_new_tokens: int = 128,
-    temperature: float = 0.7,
+    temperature: float = 0.0,
     batch_size: int = 8,
 ) -> list[str]:
     """
@@ -53,7 +53,7 @@ def generate_with_steering(
         steering_vector: Optional steering vector
         strength: Steering strength multiplier
         max_new_tokens: Max tokens to generate
-        temperature: Sampling temperature
+        temperature: Sampling temperature (0.0 = greedy, >0 = sampling)
         batch_size: Batch size for generation
 
     Returns:
@@ -75,10 +75,15 @@ def generate_with_steering(
 
         gen_kwargs = {
             "max_new_tokens": max_new_tokens,
-            "temperature": temperature,
-            "do_sample": True,
             "pad_token_id": tokenizer.pad_token_id,
         }
+
+        # Greedy vs sampling
+        if temperature > 0:
+            gen_kwargs["temperature"] = temperature
+            gen_kwargs["do_sample"] = True
+        else:
+            gen_kwargs["do_sample"] = False
 
         # Apply steering if requested
         if steering_vector is not None and strength != 0:
@@ -208,9 +213,11 @@ if __name__ == "__main__":
     parser.add_argument("--steering-vector", type=str, default=None)
     parser.add_argument("--strengths", nargs="+", type=float, default=[0.0])
     parser.add_argument("--max-new-tokens", type=int, default=128)
-    parser.add_argument("--temperature", type=float, default=0.7)
+    parser.add_argument("--temperature", type=float, default=0.0,
+        help="Sampling temperature (0.0=greedy/deterministic, >0=sampling)")
     parser.add_argument("--batch-size", type=int, default=8)
-    parser.add_argument("--num-repeats", type=int, default=1)
+    parser.add_argument("--num-repeats", type=int, default=1,
+        help="Generations per prompt (only useful with temperature>0)")
     parser.add_argument("--dtype", type=str, default="bfloat16")
 
     args = parser.parse_args()
