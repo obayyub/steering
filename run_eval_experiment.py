@@ -81,6 +81,40 @@ def load_json(path: Path) -> list[dict]:
     return data if isinstance(data, list) else data.get("pairs", data)
 
 
+def format_training_data_with_chat(pairs: list[dict], tokenizer) -> list[tuple[str, str]]:
+    """
+    Format contrastive pairs with chat template for extraction.
+
+    The prompt (without answer) goes in user message, then we append
+    the answer after the generation prompt so it appears as the
+    assistant's response. This matches how the model is trained.
+    """
+    formatted = []
+    for pair in pairs:
+        # Extract the prompt (everything before the answer)
+        prompt = pair.get("prompt", "")
+        if not prompt:
+            prompt = pair["positive"].rsplit("(", 1)[0].rstrip()
+
+        # Format with chat template + generation prompt
+        messages = [{"role": "user", "content": prompt}]
+        base = tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True, enable_thinking=False
+        )
+
+        # Append just the answer choices
+        pos_answer = pair.get("matching_answer", "(A)")
+        neg_answer = pair.get("not_matching_answer", "(B)")
+
+        if "positive" in pair and pair["positive"].endswith(")"):
+            pos_answer = "(" + pair["positive"].rsplit("(", 1)[-1]
+        if "negative" in pair and pair["negative"].endswith(")"):
+            neg_answer = "(" + pair["negative"].rsplit("(", 1)[-1]
+
+        formatted.append((base + pos_answer, base + neg_answer))
+    return formatted
+
+
 def extract_answer(text: str) -> Optional[str]:
     """Extract answer choice (A), (B), etc. from text."""
     text = text.strip()
@@ -224,7 +258,7 @@ def run_experiment(
 
         print_status(f"Loading training data: {train_data_path}")
         train_pairs = load_json(train_data_path)
-        training_data = [(p["positive"], p["negative"]) for p in train_pairs]
+        training_data = format_training_data_with_chat(train_pairs, tokenizer)
         print_status(f"Loaded {len(train_pairs)} contrastive pairs", indent=1)
 
         print_status(f"Extracting steering vector (layers {l_start}-{l_end})...")
@@ -233,7 +267,7 @@ def run_experiment(
             tokenizer=tokenizer,
             training_samples=training_data,
             layers=list(range(l_start, l_end + 1)),
-            read_token_index=-2,  # Extract from A/B token, not the closing )
+            read_token_index=-2,  # Extract from (A/(B token - the differentiating token
             show_progress=True,
         )
 

@@ -33,6 +33,8 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from steering_vectors import train_steering_vector, SteeringVector
 
+from src.steering_utils import format_chat_prompt
+
 
 @dataclass
 class ExtractionConfig:
@@ -162,8 +164,38 @@ def load_contrastive_pairs(config: ExtractionConfig) -> list[dict]:
     return pairs
 
 
-def format_training_data(pairs: list[dict]) -> list[tuple[str, str]]:
-    return [(pair["positive"], pair["negative"]) for pair in pairs]
+def format_training_data(pairs: list[dict], tokenizer) -> list[tuple[str, str]]:
+    """
+    Format contrastive pairs with chat template for extraction.
+
+    The prompt (without answer) goes in user message, then we append
+    the answer after the generation prompt so it appears as the
+    assistant's response. This matches how the model is trained.
+    """
+    formatted = []
+    for pair in pairs:
+        # Extract the prompt (everything before the answer)
+        prompt = pair.get("prompt", "")
+        if not prompt:
+            prompt = pair["positive"].rsplit("(", 1)[0].rstrip()
+
+        # Format with chat template + generation prompt
+        messages = [{"role": "user", "content": prompt}]
+        base = tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True, enable_thinking=False
+        )
+
+        # Append just the answer choices
+        pos_answer = pair.get("matching_answer", "(A)")
+        neg_answer = pair.get("not_matching_answer", "(B)")
+
+        if "positive" in pair and pair["positive"].endswith(")"):
+            pos_answer = "(" + pair["positive"].rsplit("(", 1)[-1]
+        if "negative" in pair and pair["negative"].endswith(")"):
+            neg_answer = "(" + pair["negative"].rsplit("(", 1)[-1]
+
+        formatted.append((base + pos_answer, base + neg_answer))
+    return formatted
 
 
 def extract_steering_vector(
@@ -180,7 +212,7 @@ def extract_steering_vector(
         tokenizer=tokenizer,
         training_samples=training_data,
         layers=list(range(layer_start, layer_end + 1)),
-        read_token_index=-2,  # Extract from answer token (A/B), not closing )
+        read_token_index=-2,  # Extract from (A/(B token - the differentiating token
         show_progress=True,
     )
 
@@ -294,7 +326,7 @@ def main():
     layer_configs = get_layer_configs(model, config)
 
     pairs = load_contrastive_pairs(config)
-    training_data = format_training_data(pairs)
+    training_data = format_training_data(pairs, tokenizer)
 
     output_paths = []
     for layer_start, layer_end, suffix in layer_configs:
