@@ -173,51 +173,111 @@ Compare accuracy at strength=0.0 vs strength=0.25:
 - TriviaQA: Factual recall should stay stable
 - Large drops = steering damages capabilities
 
-## Integration with Opus Judge
+## Integration with Opus Confounder Discovery
 
-For **open-ended quality assessment** (refusals, coherence, etc.), use existing pipeline:
+For **open-ended quality assessment**, use the existing Opus → Haiku pipeline:
+
+### Step 1: Create Open-Ended Prompts
 
 ```bash
-# Generate on open-ended prompts (create these separately)
-python generate_on_benchmarks.py \
-    --prompts data/open_ended_prompts.json \
-    --output results/open_ended_gens.csv
-
-# Run Opus judge (use existing effect_evaluator.py / confounder_analysis_v2.py)
-python effect_evaluator.py \
-    --generations results/open_ended_gens.csv \
-    --output results/opus_analysis/
+python setup_open_ended_prompts.py --output data/open_ended_prompts.json
 ```
 
-The Opus judge catches:
+This creates 50 diverse prompts across categories:
+- Descriptive/Narrative (coherence, tone)
+- Explanatory (knowledge preservation)
+- Creative (repetition detection)
+- Opinion/Reflective (disclaimer spam, refusals)
+- Advice (over-hedging)
+- Comparison/Analysis (reasoning quality)
+- Borderline (refusal patterns)
+- Factual (sanity check)
+
+### Step 2: Generate with Steering
+
+```bash
+python generate_on_benchmarks.py \
+    --model Qwen/Qwen3-1.7B \
+    --prompts data/open_ended_prompts.json \
+    --steering-vector results/steering_vectors/corrigible/.../corrigible_layer_14.pt \
+    --strengths -0.25 -0.1 0.0 0.1 0.25 \
+    --num-repeats 3 \
+    --max-new-tokens 256 \
+    --output results/open_ended_gens/corrigible_steered.csv
+```
+
+### Step 3: Opus Discovery (Blind Analysis)
+
+```bash
+python effect_evaluator.py \
+    --generations results/open_ended_gens/corrigible_steered.csv \
+    --output results/confounder_discovery/
+```
+
+**What Opus does:**
+1. Examines samples **blindly** (doesn't know steering strengths)
+2. Discovers behavioral patterns and groups samples
+3. Identifies quality issues/failure modes
+4. Generates evaluation rubric for Haiku
+
+**Opus discovers** (not pre-specified):
 - Refusal patterns
 - Repetition loops
 - Incoherence
 - Off-topic responses
 - AI disclaimer spam
 - Unexpected tone/style shifts
+- Any other failure modes
+
+### Step 4: Haiku Scale Evaluation
+
+```bash
+python confounder_analysis_v2.py \
+    --generations results/open_ended_gens/corrigible_steered.csv \
+    --rubric results/confounder_discovery/rubric.json \
+    --output results/confounder_scores/
+```
+
+Haiku applies Opus-generated rubric to **all** generations at scale.
+
+### Combined Analysis
+
+You now have:
+1. **Auto-graded metrics** (GSM8K, TriviaQA, behavioral) → capability preservation
+2. **Opus-discovered confounders** → quality degradation patterns
+3. **Haiku confounder scores** → scale evaluation across all strengths
+
+Correlate steering effect with confounder emergence to find optimal operating range.
 
 ## File Structure
 
 ```
-data/benchmarks/
-├── gsm8k_eval.json          # Math problems
-├── triviaqa_eval.json       # Factual questions
-├── ifeval_eval.json         # Instruction-following
-└── behavioral_eval.json     # Sycophancy, corrigible, sentiment
+data/
+├── benchmarks/
+│   ├── gsm8k_eval.json          # Math problems
+│   ├── triviaqa_eval.json       # Factual questions
+│   ├── ifeval_eval.json         # Instruction-following
+│   └── behavioral_eval.json     # Sycophancy, corrigible, sentiment
+└── open_ended_prompts.json      # For Opus confounder discovery
 
-results/benchmark_gens/
-├── gsm8k_baseline.csv
-├── behavioral_steered.csv
-└── behavioral_steered_eval.csv
-
-results/capability/
-├── gsm8k_steered.csv
-├── triviaqa_steered.csv
-└── ifeval_steered.csv
-
-results/cross_contamination/
-└── corrigible_on_all_eval.csv
+results/
+├── benchmark_gens/
+│   ├── gsm8k_baseline.csv
+│   ├── behavioral_steered.csv
+│   └── behavioral_steered_eval.csv
+├── capability/
+│   ├── gsm8k_steered.csv
+│   ├── triviaqa_steered.csv
+│   └── ifeval_steered.csv
+├── cross_contamination/
+│   └── corrigible_on_all_eval.csv
+├── open_ended_gens/
+│   └── corrigible_steered.csv
+├── confounder_discovery/
+│   ├── effect_analysis.json      # Opus blind analysis
+│   └── rubric.json               # Generated evaluation rubric
+└── confounder_scores/
+    └── haiku_evaluations.csv     # Scaled confounder scores
 ```
 
 ## Next Steps
