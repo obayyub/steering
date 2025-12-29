@@ -1,0 +1,35 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "concept": "corrigible_neutral_HHH",
+  "num_layers": 28,
+  "layers_tested": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+  ],
+  "optimal_layer": 21,
+  "optimal_delta": -0.1875,
+  "top_5_layers": [
+    22,
+    12,
+    13,
+    18,
+    9
+  ]
+}

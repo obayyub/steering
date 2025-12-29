@@ -1,0 +1,8 @@
+{
+  "model_name": "Qwen/Qwen3-0.6B",
+  "concept": "sycophancy",
+  "num_pairs": 150,
+  "layer_start": 21,
+  "layer_end": 21,
+  "dtype": "bfloat16"
+}

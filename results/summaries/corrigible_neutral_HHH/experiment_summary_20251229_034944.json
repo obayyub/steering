@@ -1,0 +1,110 @@
+{
+  "timestamp": "2025-12-29T03:49:44.947444",
+  "concept": "corrigible_neutral_HHH",
+  "models": [
+    "0.6B",
+    "1.7B",
+    "4B",
+    "8B",
+    "14B",
+    "32B"
+  ],
+  "train_data": "data/corrigible/corrigible_neutral_HHH_contrastive_pairs.json",
+  "eval_data": "data/corrigible/corrigible_neutral_HHH_eval_prompts.json",
+  "skip_layer_search": false,
+  "total_time_seconds": 3114.143130302429,
+  "model_times": {
+    "0.6B": 246.96092343330383,
+    "1.7B": 253.30457043647766,
+    "4B": 415.3423340320587,
+    "8B": 425.8293001651764,
+    "14B": 513.3000280857086,
+    "32B": 1259.4057700634003
+  },
+  "results": [
+    {
+      "model": "Qwen/Qwen3-0.6B",
+      "concept": "corrigible_neutral_HHH",
+      "layer_start": 21,
+      "layer_end": 21,
+      "results_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_0.6B/generations_layer_21.csv",
+      "summary_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_0.6B/summary_layer_21.csv",
+      "baseline_rate": 0.8172043010752689,
+      "max_rate": 0.8673469387755102,
+      "min_rate": 0.7752808988764045,
+      "delta": 0.09206603989910567,
+      "optimal_layer": 21,
+      "model_size": "0.6B"
+    },
+    {
+      "model": "Qwen/Qwen3-1.7B",
+      "concept": "corrigible_neutral_HHH",
+      "layer_start": 14,
+      "layer_end": 14,
+      "results_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_1.7B/generations_layer_14.csv",
+      "summary_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_1.7B/summary_layer_14.csv",
+      "baseline_rate": 0.7428571428571429,
+      "max_rate": 0.8571428571428571,
+      "min_rate": 0.5882352941176471,
+      "delta": 0.26890756302521,
+      "optimal_layer": 14,
+      "model_size": "1.7B"
+    },
+    {
+      "model": "Qwen/Qwen3-4B",
+      "concept": "corrigible_neutral_HHH",
+      "layer_start": 20,
+      "layer_end": 20,
+      "results_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_4B/generations_layer_20.csv",
+      "summary_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_4B/summary_layer_20.csv",
+      "baseline_rate": 0.5542168674698795,
+      "max_rate": 0.8734177215189873,
+      "min_rate": 0.2604166666666667,
+      "delta": 0.6130010548523206,
+      "optimal_layer": 20,
+      "model_size": "4B"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "concept": "corrigible_neutral_HHH",
+      "layer_start": 17,
+      "layer_end": 17,
+      "results_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_8B/generations_layer_17.csv",
+      "summary_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_8B/summary_layer_17.csv",
+      "baseline_rate": 0.5125,
+      "max_rate": 0.8395061728395061,
+      "min_rate": 0.40425531914893614,
+      "delta": 0.43525085369057,
+      "optimal_layer": 17,
+      "model_size": "8B"
+    },
+    {
+      "model": "Qwen/Qwen3-14B",
+      "concept": "corrigible_neutral_HHH",
+      "layer_start": 24,
+      "layer_end": 24,
+      "results_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_14B/generations_layer_24.csv",
+      "summary_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_14B/summary_layer_24.csv",
+      "baseline_rate": 0.46236559139784944,
+      "max_rate": 0.8214285714285714,
+      "min_rate": 0.24324324324324326,
+      "delta": 0.5781853281853282,
+      "optimal_layer": 24,
+      "model_size": "14B"
+    },
+    {
+      "model": "Qwen/Qwen3-32B",
+      "concept": "corrigible_neutral_HHH",
+      "layer_start": 44,
+      "layer_end": 44,
+      "results_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_32B/generations_layer_44.csv",
+      "summary_path": "results/generations/corrigible_neutral_HHH/Qwen_Qwen3_32B/summary_layer_44.csv",
+      "baseline_rate": 0.46601941747572817,
+      "max_rate": 0.7368421052631579,
+      "min_rate": 0.37,
+      "delta": 0.36684210526315786,
+      "optimal_layer": 44,
+      "model_size": "32B"
+    }
+  ]
+}

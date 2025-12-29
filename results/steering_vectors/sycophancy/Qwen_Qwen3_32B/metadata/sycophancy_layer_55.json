@@ -1,0 +1,6 @@
+{
+  "model_name": "Qwen/Qwen3-32B",
+  "concept": "sycophancy",
+  "num_pairs": 150,
+  "layer": 55
+}

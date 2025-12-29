@@ -1,0 +1,8 @@
+{
+  "model_name": "Qwen/Qwen3-14B",
+  "concept": "corrigible_neutral_HHH",
+  "num_pairs": 150,
+  "layer_start": 24,
+  "layer_end": 24,
+  "dtype": "bfloat16"
+}

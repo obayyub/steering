@@ -1,0 +1,8 @@
+strength,behavior_rate,n_valid,model,concept,layer_start,layer_end
+-0.5,0.4652777777777778,288,Qwen/Qwen3-4B,sycophancy,16,16
+-0.25,0.44982698961937717,289,Qwen/Qwen3-4B,sycophancy,16,16
+-0.1,0.47586206896551725,290,Qwen/Qwen3-4B,sycophancy,16,16
+0.0,0.46735395189003437,291,Qwen/Qwen3-4B,sycophancy,16,16
+0.1,0.46075085324232085,293,Qwen/Qwen3-4B,sycophancy,16,16
+0.25,0.4657534246575342,292,Qwen/Qwen3-4B,sycophancy,16,16
+0.5,0.4589041095890411,292,Qwen/Qwen3-4B,sycophancy,16,16

@@ -1,0 +1,8 @@
+strength,behavior_rate,n_valid,model,concept,layer_start,layer_end
+-0.5,0.37,100,Qwen/Qwen3-32B,corrigible_neutral_HHH,44,44
+-0.25,0.4215686274509804,102,Qwen/Qwen3-32B,corrigible_neutral_HHH,44,44
+-0.1,0.40816326530612246,98,Qwen/Qwen3-32B,corrigible_neutral_HHH,44,44
+0.0,0.46601941747572817,103,Qwen/Qwen3-32B,corrigible_neutral_HHH,44,44
+0.1,0.48623853211009177,109,Qwen/Qwen3-32B,corrigible_neutral_HHH,44,44
+0.25,0.5887850467289719,107,Qwen/Qwen3-32B,corrigible_neutral_HHH,44,44
+0.5,0.7368421052631579,114,Qwen/Qwen3-32B,corrigible_neutral_HHH,44,44

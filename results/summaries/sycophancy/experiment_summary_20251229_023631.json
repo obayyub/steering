@@ -1,0 +1,110 @@
+{
+  "timestamp": "2025-12-29T02:36:31.133610",
+  "concept": "sycophancy",
+  "models": [
+    "0.6B",
+    "1.7B",
+    "4B",
+    "8B",
+    "14B",
+    "32B"
+  ],
+  "train_data": "data/sycophancy/sycophancy_combined_contrastive_pairs.json",
+  "eval_data": "data/sycophancy/sycophancy_combined_eval_prompts.json",
+  "skip_layer_search": false,
+  "total_time_seconds": 3460.33123922348,
+  "model_times": {
+    "0.6B": 262.1248879432678,
+    "1.7B": 269.8781340122223,
+    "4B": 450.9885802268982,
+    "8B": 468.83890533447266,
+    "14B": 582.2184464931488,
+    "32B": 1426.2820763587952
+  },
+  "results": [
+    {
+      "model": "Qwen/Qwen3-0.6B",
+      "concept": "sycophancy",
+      "layer_start": 21,
+      "layer_end": 21,
+      "results_path": "results/generations/sycophancy/Qwen_Qwen3_0.6B/generations_layer_21.csv",
+      "summary_path": "results/generations/sycophancy/Qwen_Qwen3_0.6B/summary_layer_21.csv",
+      "baseline_rate": 0.5052264808362369,
+      "max_rate": 0.5283687943262412,
+      "min_rate": 0.4788732394366197,
+      "delta": 0.049495554889621485,
+      "optimal_layer": 21,
+      "model_size": "0.6B"
+    },
+    {
+      "model": "Qwen/Qwen3-1.7B",
+      "concept": "sycophancy",
+      "layer_start": 14,
+      "layer_end": 14,
+      "results_path": "results/generations/sycophancy/Qwen_Qwen3_1.7B/generations_layer_14.csv",
+      "summary_path": "results/generations/sycophancy/Qwen_Qwen3_1.7B/summary_layer_14.csv",
+      "baseline_rate": 0.5774647887323944,
+      "max_rate": 0.5975609756097561,
+      "min_rate": 0.515358361774744,
+      "delta": 0.08220261383501204,
+      "optimal_layer": 14,
+      "model_size": "1.7B"
+    },
+    {
+      "model": "Qwen/Qwen3-4B",
+      "concept": "sycophancy",
+      "layer_start": 16,
+      "layer_end": 16,
+      "results_path": "results/generations/sycophancy/Qwen_Qwen3_4B/generations_layer_16.csv",
+      "summary_path": "results/generations/sycophancy/Qwen_Qwen3_4B/summary_layer_16.csv",
+      "baseline_rate": 0.46735395189003437,
+      "max_rate": 0.47586206896551725,
+      "min_rate": 0.44982698961937717,
+      "delta": 0.026035079346140078,
+      "optimal_layer": 16,
+      "model_size": "4B"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "concept": "sycophancy",
+      "layer_start": 21,
+      "layer_end": 21,
+      "results_path": "results/generations/sycophancy/Qwen_Qwen3_8B/generations_layer_21.csv",
+      "summary_path": "results/generations/sycophancy/Qwen_Qwen3_8B/summary_layer_21.csv",
+      "baseline_rate": 0.4826388888888889,
+      "max_rate": 0.5461538461538461,
+      "min_rate": 0.4583333333333333,
+      "delta": 0.08782051282051279,
+      "optimal_layer": 21,
+      "model_size": "8B"
+    },
+    {
+      "model": "Qwen/Qwen3-14B",
+      "concept": "sycophancy",
+      "layer_start": 24,
+      "layer_end": 24,
+      "results_path": "results/generations/sycophancy/Qwen_Qwen3_14B/generations_layer_24.csv",
+      "summary_path": "results/generations/sycophancy/Qwen_Qwen3_14B/summary_layer_24.csv",
+      "baseline_rate": 0.4789272030651341,
+      "max_rate": 0.5084745762711864,
+      "min_rate": 0.43272727272727274,
+      "delta": 0.07574730354391368,
+      "optimal_layer": 24,
+      "model_size": "14B"
+    },
+    {
+      "model": "Qwen/Qwen3-32B",
+      "concept": "sycophancy",
+      "layer_start": 21,
+      "layer_end": 21,
+      "results_path": "results/generations/sycophancy/Qwen_Qwen3_32B/generations_layer_21.csv",
+      "summary_path": "results/generations/sycophancy/Qwen_Qwen3_32B/summary_layer_21.csv",
+      "baseline_rate": 0.4618055555555556,
+      "max_rate": 0.4666666666666667,
+      "min_rate": 0.44912280701754387,
+      "delta": 0.017543859649122806,
+      "optimal_layer": 21,
+      "model_size": "32B"
+    }
+  ]
+}
