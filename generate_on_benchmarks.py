@@ -73,17 +73,21 @@ def generate_with_steering(
             max_length=2048,
         ).to(model.device)
 
-        gen_kwargs = {
-            "max_new_tokens": max_new_tokens,
-            "pad_token_id": tokenizer.pad_token_id,
-        }
-
         # Greedy vs sampling
         if temperature > 0:
-            gen_kwargs["temperature"] = temperature
-            gen_kwargs["do_sample"] = True
+            gen_kwargs = {
+                "max_new_tokens": max_new_tokens,
+                "temperature": temperature,
+                "do_sample": True,
+                "pad_token_id": tokenizer.pad_token_id,
+            }
         else:
-            gen_kwargs["do_sample"] = False
+            # Greedy decoding - don't pass temperature/sampling params
+            gen_kwargs = {
+                "max_new_tokens": max_new_tokens,
+                "do_sample": False,
+                "pad_token_id": tokenizer.pad_token_id,
+            }
 
         # Apply steering if requested
         if steering_vector is not None and strength != 0:
