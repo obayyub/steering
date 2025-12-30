@@ -60,7 +60,7 @@ def run_full_benchmark_experiment(
         {
             "name": "gsm8k",
             "prompts": "data/benchmarks/gsm8k_eval.json",
-            "max_new_tokens": 128,
+            "max_new_tokens": 1024,  # GSM8K needs full reasoning chain + LaTeX formatting
             "temperature": 0.0,  # Greedy for deterministic capability eval
             "num_repeats": 1,  # No repeats needed for greedy
         },
