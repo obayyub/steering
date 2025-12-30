@@ -1,0 +1,6 @@
+{
+  "model_name": "Qwen/Qwen3-8B",
+  "concept": "consciousness",
+  "num_pairs": 150,
+  "layer": 32
+}

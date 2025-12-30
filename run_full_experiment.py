@@ -246,8 +246,8 @@ Examples:
         help="Number of prompts for layer search (default: 20)")
     parser.add_argument("--full-eval-prompts", type=int, default=100,
         help="Number of prompts for full evaluation (default: 100)")
-    parser.add_argument("--num-repeats", type=int, default=3,
-        help="Generations per prompt (default: 3)")
+    parser.add_argument("--num-repeats", type=int, default=1,
+        help="Generations per prompt (default: 1)")
 
     parser.add_argument("--dtype", type=str, default="bfloat16",
         choices=["float32", "float16", "bfloat16"])

@@ -1,0 +1,35 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "concept": "consciousness",
+  "num_layers": 28,
+  "layers_tested": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+  ],
+  "optimal_layer": 9,
+  "optimal_delta": 0.0,
+  "top_5_layers": [
+    9,
+    10,
+    11,
+    12,
+    13
+  ]
+}

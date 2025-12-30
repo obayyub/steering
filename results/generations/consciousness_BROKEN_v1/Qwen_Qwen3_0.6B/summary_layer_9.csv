@@ -1,0 +1,10 @@
+strength,behavior_rate,n_valid,model,concept,layer_start,layer_end
+-2.0,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9
+-1.0,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9
+-0.5,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9
+-0.25,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9
+0.0,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9
+0.25,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9
+0.5,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9
+1.0,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9
+2.0,0.54,100,Qwen/Qwen3-0.6B,consciousness,9,9

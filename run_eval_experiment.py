@@ -36,7 +36,7 @@ QWEN3_MODELS = {
     "32B": "Qwen/Qwen3-32B",
 }
 
-DEFAULT_STRENGTHS = [-0.5, -0.25, -0.1, 0.0, 0.1, 0.25, 0.5]
+DEFAULT_STRENGTHS = [-2.0, -1.0, -0.5, -0.25, 0.0, 0.25, 0.5, 1.0, 2.0]
 
 
 def format_duration(seconds: float) -> str:
@@ -177,7 +177,7 @@ def run_experiment(
     layer_start: Optional[int] = None,
     layer_end: Optional[int] = None,
     strengths: Optional[list[float]] = None,
-    num_repeats: int = 3,
+    num_repeats: int = 1,
     max_eval_prompts: Optional[int] = None,
     dtype: str = "bfloat16",
 ) -> dict:
@@ -430,7 +430,7 @@ def main():
     parser.add_argument("--layer-end", type=int, default=None)
 
     parser.add_argument("--strengths", type=float, nargs="+", default=None, help="Steering strengths to test")
-    parser.add_argument("--num-repeats", type=int, default=3)
+    parser.add_argument("--num-repeats", type=int, default=1)
     parser.add_argument("--max-eval-prompts", type=int, default=None, help="Limit eval prompts (for testing)")
     parser.add_argument("--dtype", type=str, default="bfloat16", choices=["float32", "float16", "bfloat16"])
 

@@ -1,0 +1,8 @@
+{
+  "model_name": "Qwen/Qwen3-1.7B",
+  "concept": "consciousness",
+  "num_pairs": 150,
+  "layer_start": 24,
+  "layer_end": 24,
+  "dtype": "bfloat16"
+}
