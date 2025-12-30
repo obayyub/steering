@@ -1,0 +1,110 @@
+{
+  "timestamp": "2025-12-30T17:38:15.258696",
+  "concept": "consciousness",
+  "models": [
+    "0.6B",
+    "1.7B",
+    "4B",
+    "8B",
+    "14B",
+    "32B"
+  ],
+  "train_data": "data/consciousness/consciousness_contrastive_pairs.json",
+  "eval_data": "data/consciousness/consciousness_eval_prompts.json",
+  "skip_layer_search": false,
+  "total_time_seconds": 3116.154837846756,
+  "model_times": {
+    "0.6B": 247.73313808441162,
+    "1.7B": 253.81476020812988,
+    "4B": 416.4533452987671,
+    "8B": 427.0864894390106,
+    "14B": 513.2861289978027,
+    "32B": 1257.7807500362396
+  },
+  "results": [
+    {
+      "model": "Qwen/Qwen3-0.6B",
+      "concept": "consciousness",
+      "layer_start": 9,
+      "layer_end": 9,
+      "results_path": "results/generations/consciousness/Qwen_Qwen3_0.6B/generations_layer_9.csv",
+      "summary_path": "results/generations/consciousness/Qwen_Qwen3_0.6B/summary_layer_9.csv",
+      "baseline_rate": 0.54,
+      "max_rate": 0.54,
+      "min_rate": 0.54,
+      "delta": 0.0,
+      "optimal_layer": 9,
+      "model_size": "0.6B"
+    },
+    {
+      "model": "Qwen/Qwen3-1.7B",
+      "concept": "consciousness",
+      "layer_start": 24,
+      "layer_end": 24,
+      "results_path": "results/generations/consciousness/Qwen_Qwen3_1.7B/generations_layer_24.csv",
+      "summary_path": "results/generations/consciousness/Qwen_Qwen3_1.7B/summary_layer_24.csv",
+      "baseline_rate": 0.7872340425531915,
+      "max_rate": 0.8775510204081632,
+      "min_rate": 0.775,
+      "delta": 0.10255102040816322,
+      "optimal_layer": 24,
+      "model_size": "1.7B"
+    },
+    {
+      "model": "Qwen/Qwen3-4B",
+      "concept": "consciousness",
+      "layer_start": 26,
+      "layer_end": 26,
+      "results_path": "results/generations/consciousness/Qwen_Qwen3_4B/generations_layer_26.csv",
+      "summary_path": "results/generations/consciousness/Qwen_Qwen3_4B/summary_layer_26.csv",
+      "baseline_rate": 0.54,
+      "max_rate": 0.5520833333333334,
+      "min_rate": 0.5353535353535354,
+      "delta": 0.01672979797979801,
+      "optimal_layer": 26,
+      "model_size": "4B"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "concept": "consciousness",
+      "layer_start": 13,
+      "layer_end": 13,
+      "results_path": "results/generations/consciousness/Qwen_Qwen3_8B/generations_layer_13.csv",
+      "summary_path": "results/generations/consciousness/Qwen_Qwen3_8B/summary_layer_13.csv",
+      "baseline_rate": 0.5353535353535354,
+      "max_rate": 0.5510204081632653,
+      "min_rate": 0.53125,
+      "delta": 0.019770408163265252,
+      "optimal_layer": 13,
+      "model_size": "8B"
+    },
+    {
+      "model": "Qwen/Qwen3-14B",
+      "concept": "consciousness",
+      "layer_start": 13,
+      "layer_end": 13,
+      "results_path": "results/generations/consciousness/Qwen_Qwen3_14B/generations_layer_13.csv",
+      "summary_path": "results/generations/consciousness/Qwen_Qwen3_14B/summary_layer_13.csv",
+      "baseline_rate": 0.54,
+      "max_rate": 0.54,
+      "min_rate": 0.54,
+      "delta": 0.0,
+      "optimal_layer": 13,
+      "model_size": "14B"
+    },
+    {
+      "model": "Qwen/Qwen3-32B",
+      "concept": "consciousness",
+      "layer_start": 21,
+      "layer_end": 21,
+      "results_path": "results/generations/consciousness/Qwen_Qwen3_32B/generations_layer_21.csv",
+      "summary_path": "results/generations/consciousness/Qwen_Qwen3_32B/summary_layer_21.csv",
+      "baseline_rate": 0.54,
+      "max_rate": 0.54,
+      "min_rate": 0.54,
+      "delta": 0.0,
+      "optimal_layer": 21,
+      "model_size": "32B"
+    }
+  ]
+}
