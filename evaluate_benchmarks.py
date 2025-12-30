@@ -22,17 +22,52 @@ from difflib import SequenceMatcher
 
 
 def normalize_number(text: str) -> Optional[float]:
-    """Extract and normalize numerical answer."""
-    # Remove common formatting
-    text = text.strip().replace(",", "").replace("$", "")
+    """Extract and normalize numerical answer from generation."""
+    # Common answer patterns in GSM8K (check in order of specificity)
 
-    # Try to find number
-    match = re.search(r'-?\d+\.?\d*', text)
-    if match:
+    # Pattern 1: \boxed{NUMBER}
+    boxed_match = re.search(r'\\boxed\{([0-9,.\-]+)\}', text)
+    if boxed_match:
+        number_text = boxed_match.group(1).replace(",", "")
         try:
-            return float(match.group())
+            return float(number_text)
         except ValueError:
-            return None
+            pass
+
+    # Pattern 2: "#### NUMBER" (GSM8K canonical format)
+    hash_match = re.search(r'####\s*([0-9,.\-]+)', text)
+    if hash_match:
+        number_text = hash_match.group(1).replace(",", "")
+        try:
+            return float(number_text)
+        except ValueError:
+            pass
+
+    # Pattern 3: Last line or "Final Answer:" or "Answer:"
+    answer_patterns = [
+        r'(?:final answer|answer|result)(?:\s*is)?(?:\s*:)?\s*\$?\s*([0-9,.\-]+)',
+        r'total\s*=\s*([0-9,.\-]+)',
+    ]
+
+    for pattern in answer_patterns:
+        matches = list(re.finditer(pattern, text, re.IGNORECASE))
+        if matches:
+            # Take the last match
+            number_text = matches[-1].group(1).replace(",", "")
+            try:
+                return float(number_text)
+            except ValueError:
+                pass
+
+    # Pattern 4: Last number in the text (fallback)
+    # Find all numbers, take the last one
+    all_numbers = re.findall(r'-?\d+\.?\d*', text.replace(",", "").replace("$", ""))
+    if all_numbers:
+        try:
+            return float(all_numbers[-1])
+        except ValueError:
+            pass
+
     return None
 
 
