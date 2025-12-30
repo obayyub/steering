@@ -1,0 +1,6 @@
+{
+  "model_name": "Qwen/Qwen3-4B",
+  "concept": "self_awareness_text_model",
+  "num_pairs": 100,
+  "layer": 26
+}

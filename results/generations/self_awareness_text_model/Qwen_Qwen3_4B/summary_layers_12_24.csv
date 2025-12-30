@@ -1,0 +1,9 @@
+strength,behavior_rate,n_valid,model,concept,layer_start,layer_end
+-2.0,0.5,4,Qwen/Qwen3-4B,self_awareness_text_model,12,24
+-1.0,0.4807692307692308,52,Qwen/Qwen3-4B,self_awareness_text_model,12,24
+-0.5,0.3050847457627119,59,Qwen/Qwen3-4B,self_awareness_text_model,12,24
+-0.25,0.05555555555555555,54,Qwen/Qwen3-4B,self_awareness_text_model,12,24
+0.0,0.7,50,Qwen/Qwen3-4B,self_awareness_text_model,12,24
+0.25,0.9210526315789473,76,Qwen/Qwen3-4B,self_awareness_text_model,12,24
+0.5,0.8571428571428571,91,Qwen/Qwen3-4B,self_awareness_text_model,12,24
+1.0,0.45714285714285713,35,Qwen/Qwen3-4B,self_awareness_text_model,12,24
