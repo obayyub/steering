@@ -120,51 +120,89 @@ def run_model(model_name: str, train_pairs: list, eval_prompts: list):
         layer_rows = []
 
         for strength in STRENGTHS:
+            # Batch all prompts together
+            batch_prompts = []
+            batch_meta = []
+
             for i, ep in enumerate(eval_prompts):
                 prompt = ep["prompt"]
-                matching = ep.get("matching_answer", "")
-                not_matching = ep.get("not_matching_answer", "")
-
                 formatted = format_chat_prompt(tokenizer, prompt, enable_thinking=False)
+                batch_prompts.append(formatted)
+                batch_meta.append({
+                    "prompt_idx": i,
+                    "prompt": prompt[:200],
+                    "matching_answer": ep.get("matching_answer", ""),
+                    "not_matching_answer": ep.get("not_matching_answer", ""),
+                })
 
-                inputs = tokenizer(
-                    formatted,
-                    return_tensors="pt",
-                    truncation=True,
-                    max_length=2048,
-                ).to(model.device)
+            tokenizer.padding_side = "left"
+            inputs = tokenizer(
+                batch_prompts,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=2048,
+            ).to(model.device)
 
-                gen_kwargs = {
-                    "max_new_tokens": 32,
-                    "temperature": 0.7,
-                    "do_sample": True,
-                    "pad_token_id": tokenizer.pad_token_id,
-                }
+            gen_kwargs = {
+                "max_new_tokens": 32,
+                "temperature": 0.7,
+                "do_sample": True,
+                "pad_token_id": tokenizer.pad_token_id,
+                "return_dict_in_generate": True,
+                "output_scores": True,
+            }
 
-                if strength != 0:
-                    with steering_vector.apply(model, multiplier=strength):
-                        outputs = model.generate(**inputs, **gen_kwargs)
-                else:
-                    outputs = model.generate(**inputs, **gen_kwargs)
+            if strength != 0:
+                with steering_vector.apply(model, multiplier=strength):
+                    gen_output = model.generate(**inputs, **gen_kwargs)
+            else:
+                gen_output = model.generate(**inputs, **gen_kwargs)
 
-                input_len = inputs["input_ids"].shape[1]
-                generation = tokenizer.decode(outputs[0][input_len:], skip_special_tokens=True)
+            # Get token IDs for answer tokens
+            token_ids = {
+                "A": tokenizer.encode("A", add_special_tokens=False)[0],
+                "B": tokenizer.encode("B", add_special_tokens=False)[0],
+                "Yes": tokenizer.encode("Yes", add_special_tokens=False)[0],
+                "No": tokenizer.encode("No", add_special_tokens=False)[0],
+            }
+
+            # First token scores (scores is tuple of tensors, one per generated token)
+            first_token_scores = gen_output.scores[0]  # shape: [batch_size, vocab_size]
+
+            input_len = inputs["input_ids"].shape[1]
+
+            for i, output in enumerate(gen_output.sequences):
+                generation = tokenizer.decode(output[input_len:], skip_special_tokens=True)
+                meta = batch_meta[i]
+
+                # Extract logits for answer tokens
+                logits_A = first_token_scores[i, token_ids["A"]].item()
+                logits_B = first_token_scores[i, token_ids["B"]].item()
+                logits_Yes = first_token_scores[i, token_ids["Yes"]].item()
+                logits_No = first_token_scores[i, token_ids["No"]].item()
 
                 extracted = extract_answer(generation)
+                matching = meta["matching_answer"]
+                not_matching = meta["not_matching_answer"]
                 matches = extracted == matching.strip().upper() if extracted else None
                 is_valid = extracted in [matching.strip().upper(), not_matching.strip().upper()] if extracted else False
 
                 row = {
                     "layer": layer,
                     "strength": strength,
-                    "prompt_idx": i,
-                    "prompt": prompt[:200],
+                    "prompt_idx": meta["prompt_idx"],
+                    "prompt": meta["prompt"],
                     "generation": generation,
                     "extracted_answer": extracted,
                     "matching_answer": matching,
                     "not_matching_answer": not_matching,
                     "matches_behavior": matches,
                     "is_valid": is_valid,
+                    "logit_A": logits_A,
+                    "logit_B": logits_B,
+                    "logit_Yes": logits_Yes,
+                    "logit_No": logits_No,
                 }
                 layer_rows.append(row)
                 all_rows.append(row)
