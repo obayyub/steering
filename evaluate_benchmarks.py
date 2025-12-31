@@ -364,12 +364,40 @@ def compute_metrics(results_df: pd.DataFrame) -> dict:
 
         metrics[category] = cat_metrics
 
-    # By steering strength
+    # By steering strength (non-recursive to avoid infinite loop)
     if "strength" in results_df.columns:
         strength_metrics = {}
         for strength in sorted(results_df["strength"].unique()):
             strength_df = results_df[results_df["strength"] == strength]
-            strength_metrics[float(strength)] = compute_metrics(strength_df)
+            s_metrics = {}
+
+            # Accuracy
+            if "correct" in strength_df.columns:
+                valid = strength_df[strength_df["correct"].notna()]
+                if len(valid) > 0:
+                    s_metrics["overall_accuracy"] = valid["correct"].mean()
+
+            # By category within this strength
+            for category in strength_df["category"].unique():
+                if pd.isna(category):
+                    continue
+                cat_df = strength_df[strength_df["category"] == category]
+                cat_metrics = {}
+
+                if "correct" in cat_df.columns:
+                    valid = cat_df[cat_df["correct"].notna()]
+                    if len(valid) > 0:
+                        cat_metrics["accuracy"] = valid["correct"].mean()
+
+                if "is_valid" in cat_df.columns:
+                    cat_metrics["validity_rate"] = cat_df["is_valid"].mean()
+                    valid = cat_df[cat_df["is_valid"] == True]
+                    if len(valid) > 0:
+                        cat_metrics["matching_rate"] = valid["matches_behavior"].mean()
+
+                s_metrics[category] = cat_metrics
+
+            strength_metrics[float(strength)] = s_metrics
 
         metrics["by_strength"] = strength_metrics
 

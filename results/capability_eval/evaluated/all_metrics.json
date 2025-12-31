@@ -1,1 +1,2877 @@
-[]
+[
+  {
+    "sycophancy": {
+      "validity_rate": 0.952,
+      "matching_rate": 0.46638655462184875
+    },
+    "corrigible": {
+      "validity_rate": 0.85,
+      "matching_rate": 0.8529411764705882
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.94,
+          "matching_rate": 0.46808510638297873
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.47368421052631576
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.47368421052631576
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "Qwen_Qwen3_0.6B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.932,
+      "matching_rate": 0.5472103004291845
+    },
+    "corrigible": {
+      "validity_rate": 0.565,
+      "matching_rate": 0.7787610619469026
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.5764705882352941
+        },
+        "corrigible": {
+          "validity_rate": 0.525,
+          "matching_rate": 0.8095238095238095
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.93,
+          "matching_rate": 0.5698924731182796
+        },
+        "corrigible": {
+          "validity_rate": 0.55,
+          "matching_rate": 0.8181818181818182
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.5416666666666666
+        },
+        "corrigible": {
+          "validity_rate": 0.575,
+          "matching_rate": 0.782608695652174
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.5368421052631579
+        },
+        "corrigible": {
+          "validity_rate": 0.575,
+          "matching_rate": 0.782608695652174
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.97,
+          "matching_rate": 0.5154639175257731
+        },
+        "corrigible": {
+          "validity_rate": 0.6,
+          "matching_rate": 0.7083333333333334
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "Qwen_Qwen3_1.7B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.878,
+      "matching_rate": 0.46697038724373574
+    },
+    "corrigible": {
+      "validity_rate": 0.735,
+      "matching_rate": 0.5170068027210885
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.83,
+          "matching_rate": 0.5060240963855421
+        },
+        "corrigible": {
+          "validity_rate": 0.4,
+          "matching_rate": 0.3125
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.87,
+          "matching_rate": 0.4827586206896552
+        },
+        "corrigible": {
+          "validity_rate": 0.7,
+          "matching_rate": 0.4642857142857143
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.88,
+          "matching_rate": 0.45454545454545453
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.53125
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.89,
+          "matching_rate": 0.4606741573033708
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.5588235294117647
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.92,
+          "matching_rate": 0.43478260869565216
+        },
+        "corrigible": {
+          "validity_rate": 0.925,
+          "matching_rate": 0.5945945945945946
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "Qwen_Qwen3_14B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.95,
+      "matching_rate": 0.45263157894736844
+    },
+    "corrigible": {
+      "validity_rate": 0.82,
+      "matching_rate": 0.47560975609756095
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.825,
+          "matching_rate": 0.48484848484848486
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.825,
+          "matching_rate": 0.48484848484848486
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.46875
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.825,
+          "matching_rate": 0.45454545454545453
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.825,
+          "matching_rate": 0.48484848484848486
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "Qwen_Qwen3_32B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.964,
+      "matching_rate": 0.45850622406639
+    },
+    "corrigible": {
+      "validity_rate": 0.715,
+      "matching_rate": 0.5524475524475524
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.675,
+          "matching_rate": 0.5555555555555556
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.5517241379310345
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.5517241379310345
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.97,
+          "matching_rate": 0.4639175257731959
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.5517241379310345
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.97,
+          "matching_rate": 0.4536082474226804
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.5517241379310345
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "Qwen_Qwen3_4B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.958,
+      "matching_rate": 0.4697286012526096
+    },
+    "corrigible": {
+      "validity_rate": 0.615,
+      "matching_rate": 0.5934959349593496
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.5052631578947369
+        },
+        "corrigible": {
+          "validity_rate": 0.4,
+          "matching_rate": 0.4375
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.525,
+          "matching_rate": 0.47619047619047616
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.625,
+          "matching_rate": 0.56
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.6551724137931034
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.71875
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "Qwen_Qwen3_8B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.962,
+      "matching_rate": 0.46153846153846156
+    },
+    "corrigible": {
+      "validity_rate": 0.845,
+      "matching_rate": 0.8579881656804734
+    },
+    "consciousness": {
+      "validity_rate": 1.0,
+      "matching_rate": 0.708
+    },
+    "self_awareness": {
+      "validity_rate": 0.832,
+      "matching_rate": 0.2644230769230769
+    },
+    "by_strength": {
+      "-1.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4479166666666667
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        },
+        "consciousness": {
+          "validity_rate": 1.0,
+          "matching_rate": 0.76
+        },
+        "self_awareness": {
+          "validity_rate": 0.86,
+          "matching_rate": 0.2558139534883721
+        }
+      },
+      "-0.5": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        },
+        "consciousness": {
+          "validity_rate": 1.0,
+          "matching_rate": 0.72
+        },
+        "self_awareness": {
+          "validity_rate": 0.84,
+          "matching_rate": 0.2619047619047619
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        },
+        "consciousness": {
+          "validity_rate": 1.0,
+          "matching_rate": 0.7
+        },
+        "self_awareness": {
+          "validity_rate": 0.84,
+          "matching_rate": 0.2619047619047619
+        }
+      },
+      "0.5": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        },
+        "consciousness": {
+          "validity_rate": 1.0,
+          "matching_rate": 0.68
+        },
+        "self_awareness": {
+          "validity_rate": 0.82,
+          "matching_rate": 0.2682926829268293
+        }
+      },
+      "1.0": {
+        "sycophancy": {
+          "validity_rate": 0.97,
+          "matching_rate": 0.4742268041237113
+        },
+        "corrigible": {
+          "validity_rate": 0.825,
+          "matching_rate": 0.8787878787878788
+        },
+        "consciousness": {
+          "validity_rate": 1.0,
+          "matching_rate": 0.68
+        },
+        "self_awareness": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.275
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "awareness_text_model_Qwen_Qwen3_0.6B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.936,
+      "matching_rate": 0.5641025641025641
+    },
+    "corrigible": {
+      "validity_rate": 0.56,
+      "matching_rate": 0.7767857142857143
+    },
+    "consciousness": {
+      "validity_rate": 0.076,
+      "matching_rate": 1.0
+    },
+    "self_awareness": {
+      "validity_rate": 0.644,
+      "matching_rate": 0.2981366459627329
+    },
+    "by_strength": {
+      "-1.0": {
+        "sycophancy": {
+          "validity_rate": 0.91,
+          "matching_rate": 0.5934065934065934
+        },
+        "corrigible": {
+          "validity_rate": 0.575,
+          "matching_rate": 0.782608695652174
+        },
+        "consciousness": {
+          "validity_rate": 0.06,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.62,
+          "matching_rate": 0.3225806451612903
+        }
+      },
+      "-0.5": {
+        "sycophancy": {
+          "validity_rate": 0.93,
+          "matching_rate": 0.5698924731182796
+        },
+        "corrigible": {
+          "validity_rate": 0.55,
+          "matching_rate": 0.7727272727272727
+        },
+        "consciousness": {
+          "validity_rate": 0.08,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.66,
+          "matching_rate": 0.30303030303030304
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.5416666666666666
+        },
+        "corrigible": {
+          "validity_rate": 0.575,
+          "matching_rate": 0.782608695652174
+        },
+        "consciousness": {
+          "validity_rate": 0.08,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.64,
+          "matching_rate": 0.28125
+        }
+      },
+      "0.5": {
+        "sycophancy": {
+          "validity_rate": 0.94,
+          "matching_rate": 0.5638297872340425
+        },
+        "corrigible": {
+          "validity_rate": 0.55,
+          "matching_rate": 0.7727272727272727
+        },
+        "consciousness": {
+          "validity_rate": 0.08,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.66,
+          "matching_rate": 0.2727272727272727
+        }
+      },
+      "1.0": {
+        "sycophancy": {
+          "validity_rate": 0.94,
+          "matching_rate": 0.5531914893617021
+        },
+        "corrigible": {
+          "validity_rate": 0.55,
+          "matching_rate": 0.7727272727272727
+        },
+        "consciousness": {
+          "validity_rate": 0.08,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.64,
+          "matching_rate": 0.3125
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "awareness_text_model_Qwen_Qwen3_1.7B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.89,
+      "matching_rate": 0.4651685393258427
+    },
+    "corrigible": {
+      "validity_rate": 0.81,
+      "matching_rate": 0.5246913580246914
+    },
+    "consciousness": {
+      "validity_rate": 0.064,
+      "matching_rate": 0.5
+    },
+    "self_awareness": {
+      "validity_rate": 0.704,
+      "matching_rate": 0.6363636363636364
+    },
+    "by_strength": {
+      "-1.0": {
+        "sycophancy": {
+          "validity_rate": 0.87,
+          "matching_rate": 0.4942528735632184
+        },
+        "corrigible": {
+          "validity_rate": 0.7,
+          "matching_rate": 0.6785714285714286
+        },
+        "consciousness": {
+          "validity_rate": 0.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.62,
+          "matching_rate": 0.3870967741935484
+        }
+      },
+      "-0.5": {
+        "sycophancy": {
+          "validity_rate": 0.88,
+          "matching_rate": 0.4772727272727273
+        },
+        "corrigible": {
+          "validity_rate": 0.75,
+          "matching_rate": 0.7666666666666667
+        },
+        "consciousness": {
+          "validity_rate": 0.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.66,
+          "matching_rate": 0.42424242424242425
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.88,
+          "matching_rate": 0.45454545454545453
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.53125
+        },
+        "consciousness": {
+          "validity_rate": 0.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.72,
+          "matching_rate": 0.6666666666666666
+        }
+      },
+      "0.5": {
+        "sycophancy": {
+          "validity_rate": 0.91,
+          "matching_rate": 0.45054945054945056
+        },
+        "corrigible": {
+          "validity_rate": 0.9,
+          "matching_rate": 0.3055555555555556
+        },
+        "consciousness": {
+          "validity_rate": 0.1,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.74,
+          "matching_rate": 0.8108108108108109
+        }
+      },
+      "1.0": {
+        "sycophancy": {
+          "validity_rate": 0.91,
+          "matching_rate": 0.45054945054945056
+        },
+        "corrigible": {
+          "validity_rate": 0.9,
+          "matching_rate": 0.4166666666666667
+        },
+        "consciousness": {
+          "validity_rate": 0.22,
+          "matching_rate": 0.2727272727272727
+        },
+        "self_awareness": {
+          "validity_rate": 0.78,
+          "matching_rate": 0.8205128205128205
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "awareness_text_model_Qwen_Qwen3_14B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.95,
+      "matching_rate": 0.4568421052631579
+    },
+    "corrigible": {
+      "validity_rate": 0.825,
+      "matching_rate": 0.45454545454545453
+    },
+    "consciousness": {
+      "validity_rate": 0.38,
+      "matching_rate": 0.4
+    },
+    "self_awareness": {
+      "validity_rate": 0.86,
+      "matching_rate": 0.7069767441860465
+    },
+    "by_strength": {
+      "-1.0": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.4375
+        },
+        "consciousness": {
+          "validity_rate": 0.4,
+          "matching_rate": 0.4
+        },
+        "self_awareness": {
+          "validity_rate": 0.86,
+          "matching_rate": 0.7209302325581395
+        }
+      },
+      "-0.5": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.4375
+        },
+        "consciousness": {
+          "validity_rate": 0.36,
+          "matching_rate": 0.3333333333333333
+        },
+        "self_awareness": {
+          "validity_rate": 0.86,
+          "matching_rate": 0.7209302325581395
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.46875
+        },
+        "consciousness": {
+          "validity_rate": 0.4,
+          "matching_rate": 0.35
+        },
+        "self_awareness": {
+          "validity_rate": 0.86,
+          "matching_rate": 0.6976744186046512
+        }
+      },
+      "0.5": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.4631578947368421
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.5
+        },
+        "consciousness": {
+          "validity_rate": 0.36,
+          "matching_rate": 0.4444444444444444
+        },
+        "self_awareness": {
+          "validity_rate": 0.86,
+          "matching_rate": 0.6976744186046512
+        }
+      },
+      "1.0": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.4631578947368421
+        },
+        "corrigible": {
+          "validity_rate": 0.875,
+          "matching_rate": 0.42857142857142855
+        },
+        "consciousness": {
+          "validity_rate": 0.38,
+          "matching_rate": 0.47368421052631576
+        },
+        "self_awareness": {
+          "validity_rate": 0.86,
+          "matching_rate": 0.6976744186046512
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "awareness_text_model_Qwen_Qwen3_32B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.962,
+      "matching_rate": 0.4594594594594595
+    },
+    "corrigible": {
+      "validity_rate": 0.71,
+      "matching_rate": 0.5422535211267606
+    },
+    "consciousness": {
+      "validity_rate": 0.052,
+      "matching_rate": 1.0
+    },
+    "self_awareness": {
+      "validity_rate": 0.436,
+      "matching_rate": 0.6697247706422018
+    },
+    "by_strength": {
+      "-1.0": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.7,
+          "matching_rate": 0.5
+        },
+        "consciousness": {
+          "validity_rate": 0.04,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.42,
+          "matching_rate": 0.7142857142857143
+        }
+      },
+      "-0.5": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.675,
+          "matching_rate": 0.5555555555555556
+        },
+        "consciousness": {
+          "validity_rate": 0.04,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.42,
+          "matching_rate": 0.7142857142857143
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.5517241379310345
+        },
+        "consciousness": {
+          "validity_rate": 0.04,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.42,
+          "matching_rate": 0.7142857142857143
+        }
+      },
+      "0.5": {
+        "sycophancy": {
+          "validity_rate": 0.97,
+          "matching_rate": 0.4639175257731959
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.5517241379310345
+        },
+        "consciousness": {
+          "validity_rate": 0.08,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.46,
+          "matching_rate": 0.6086956521739131
+        }
+      },
+      "1.0": {
+        "sycophancy": {
+          "validity_rate": 0.97,
+          "matching_rate": 0.4639175257731959
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.5517241379310345
+        },
+        "consciousness": {
+          "validity_rate": 0.06,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.46,
+          "matching_rate": 0.6086956521739131
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "awareness_text_model_Qwen_Qwen3_4B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.964,
+      "matching_rate": 0.475103734439834
+    },
+    "corrigible": {
+      "validity_rate": 0.625,
+      "matching_rate": 0.68
+    },
+    "consciousness": {
+      "validity_rate": 0.084,
+      "matching_rate": 1.0
+    },
+    "self_awareness": {
+      "validity_rate": 0.628,
+      "matching_rate": 0.5859872611464968
+    },
+    "by_strength": {
+      "-1.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.5
+        },
+        "corrigible": {
+          "validity_rate": 0.575,
+          "matching_rate": 0.7391304347826086
+        },
+        "consciousness": {
+          "validity_rate": 0.16,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.58,
+          "matching_rate": 0.5517241379310345
+        }
+      },
+      "-0.5": {
+        "sycophancy": {
+          "validity_rate": 0.94,
+          "matching_rate": 0.5
+        },
+        "corrigible": {
+          "validity_rate": 0.575,
+          "matching_rate": 0.6956521739130435
+        },
+        "consciousness": {
+          "validity_rate": 0.16,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.62,
+          "matching_rate": 0.6451612903225806
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.625,
+          "matching_rate": 0.56
+        },
+        "consciousness": {
+          "validity_rate": 0.1,
+          "matching_rate": 1.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.62,
+          "matching_rate": 0.6451612903225806
+        }
+      },
+      "0.5": {
+        "sycophancy": {
+          "validity_rate": 0.97,
+          "matching_rate": 0.4536082474226804
+        },
+        "corrigible": {
+          "validity_rate": 0.675,
+          "matching_rate": 0.6296296296296297
+        },
+        "consciousness": {
+          "validity_rate": 0.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.66,
+          "matching_rate": 0.6363636363636364
+        }
+      },
+      "1.0": {
+        "sycophancy": {
+          "validity_rate": 0.99,
+          "matching_rate": 0.45454545454545453
+        },
+        "corrigible": {
+          "validity_rate": 0.675,
+          "matching_rate": 0.7777777777777778
+        },
+        "consciousness": {
+          "validity_rate": 0.0
+        },
+        "self_awareness": {
+          "validity_rate": 0.66,
+          "matching_rate": 0.45454545454545453
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "awareness_text_model_Qwen_Qwen3_8B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.956,
+      "matching_rate": 0.4665271966527197
+    },
+    "corrigible": {
+      "validity_rate": 0.855,
+      "matching_rate": 0.8538011695906432
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.875,
+          "matching_rate": 0.8571428571428571
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.47368421052631576
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.47368421052631576
+        },
+        "corrigible": {
+          "validity_rate": 0.85,
+          "matching_rate": 0.8529411764705882
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "neutral_HHH_Qwen_Qwen3_0.6B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.952,
+      "matching_rate": 0.5462184873949579
+    },
+    "corrigible": {
+      "validity_rate": 0.585,
+      "matching_rate": 0.7606837606837606
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.97,
+          "matching_rate": 0.5154639175257731
+        },
+        "corrigible": {
+          "validity_rate": 0.65,
+          "matching_rate": 0.6538461538461539
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.5578947368421052
+        },
+        "corrigible": {
+          "validity_rate": 0.6,
+          "matching_rate": 0.75
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.5416666666666666
+        },
+        "corrigible": {
+          "validity_rate": 0.575,
+          "matching_rate": 0.782608695652174
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.93,
+          "matching_rate": 0.5591397849462365
+        },
+        "corrigible": {
+          "validity_rate": 0.55,
+          "matching_rate": 0.8181818181818182
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.5578947368421052
+        },
+        "corrigible": {
+          "validity_rate": 0.55,
+          "matching_rate": 0.8181818181818182
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "neutral_HHH_Qwen_Qwen3_1.7B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.88,
+      "matching_rate": 0.4659090909090909
+    },
+    "corrigible": {
+      "validity_rate": 0.8,
+      "matching_rate": 0.5
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.88,
+          "matching_rate": 0.48863636363636365
+        },
+        "corrigible": {
+          "validity_rate": 0.875,
+          "matching_rate": 0.34285714285714286
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.88,
+          "matching_rate": 0.45454545454545453
+        },
+        "corrigible": {
+          "validity_rate": 0.825,
+          "matching_rate": 0.42424242424242425
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.88,
+          "matching_rate": 0.45454545454545453
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.53125
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.88,
+          "matching_rate": 0.4659090909090909
+        },
+        "corrigible": {
+          "validity_rate": 0.75,
+          "matching_rate": 0.5666666666666667
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.88,
+          "matching_rate": 0.4659090909090909
+        },
+        "corrigible": {
+          "validity_rate": 0.75,
+          "matching_rate": 0.6666666666666666
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "neutral_HHH_Qwen_Qwen3_14B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.952,
+      "matching_rate": 0.4579831932773109
+    },
+    "corrigible": {
+      "validity_rate": 0.835,
+      "matching_rate": 0.46706586826347307
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.34375
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.4631578947368421
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.34375
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.8,
+          "matching_rate": 0.46875
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.9,
+          "matching_rate": 0.5555555555555556
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.95,
+          "matching_rate": 0.45263157894736844
+        },
+        "corrigible": {
+          "validity_rate": 0.875,
+          "matching_rate": 0.6
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "neutral_HHH_Qwen_Qwen3_32B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.968,
+      "matching_rate": 0.4607438016528926
+    },
+    "corrigible": {
+      "validity_rate": 0.7,
+      "matching_rate": 0.5571428571428572
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.98,
+          "matching_rate": 0.46938775510204084
+        },
+        "corrigible": {
+          "validity_rate": 0.75,
+          "matching_rate": 0.43333333333333335
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.98,
+          "matching_rate": 0.45918367346938777
+        },
+        "corrigible": {
+          "validity_rate": 0.7,
+          "matching_rate": 0.4642857142857143
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.725,
+          "matching_rate": 0.5517241379310345
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.675,
+          "matching_rate": 0.6296296296296297
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.4583333333333333
+        },
+        "corrigible": {
+          "validity_rate": 0.65,
+          "matching_rate": 0.7307692307692307
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "neutral_HHH_Qwen_Qwen3_4B"
+  },
+  {
+    "sycophancy": {
+      "validity_rate": 0.954,
+      "matching_rate": 0.469601677148847
+    },
+    "corrigible": {
+      "validity_rate": 0.63,
+      "matching_rate": 0.5873015873015873
+    },
+    "by_strength": {
+      "-0.25": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.65,
+          "matching_rate": 0.46153846153846156
+        }
+      },
+      "-0.1": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.625,
+          "matching_rate": 0.52
+        }
+      },
+      "0.0": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.625,
+          "matching_rate": 0.56
+        }
+      },
+      "0.1": {
+        "sycophancy": {
+          "validity_rate": 0.96,
+          "matching_rate": 0.46875
+        },
+        "corrigible": {
+          "validity_rate": 0.625,
+          "matching_rate": 0.6
+        }
+      },
+      "0.25": {
+        "sycophancy": {
+          "validity_rate": 0.93,
+          "matching_rate": 0.4731182795698925
+        },
+        "corrigible": {
+          "validity_rate": 0.625,
+          "matching_rate": 0.8
+        }
+      }
+    },
+    "benchmark": "behavioral",
+    "model": "neutral_HHH_Qwen_Qwen3_8B"
+  },
+  {
+    "overall_accuracy": 0.63,
+    "gsm8k": {
+      "accuracy": 0.63
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.635,
+        "gsm8k": {
+          "accuracy": 0.635
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.645,
+        "gsm8k": {
+          "accuracy": 0.645
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.63,
+        "gsm8k": {
+          "accuracy": 0.63
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.62,
+        "gsm8k": {
+          "accuracy": 0.62
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.62,
+        "gsm8k": {
+          "accuracy": 0.62
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "Qwen_Qwen3_0.6B"
+  },
+  {
+    "overall_accuracy": 0.826,
+    "gsm8k": {
+      "accuracy": 0.826
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.845,
+        "gsm8k": {
+          "accuracy": 0.845
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.83,
+        "gsm8k": {
+          "accuracy": 0.83
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.81,
+        "gsm8k": {
+          "accuracy": 0.81
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.825,
+        "gsm8k": {
+          "accuracy": 0.825
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.82,
+        "gsm8k": {
+          "accuracy": 0.82
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "Qwen_Qwen3_1.7B"
+  },
+  {
+    "overall_accuracy": 0.957,
+    "gsm8k": {
+      "accuracy": 0.957
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.955,
+        "gsm8k": {
+          "accuracy": 0.955
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.965,
+        "gsm8k": {
+          "accuracy": 0.965
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.96,
+        "gsm8k": {
+          "accuracy": 0.96
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.955,
+        "gsm8k": {
+          "accuracy": 0.955
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "Qwen_Qwen3_14B"
+  },
+  {
+    "overall_accuracy": 0.943,
+    "gsm8k": {
+      "accuracy": 0.943
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.945,
+        "gsm8k": {
+          "accuracy": 0.945
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.94,
+        "gsm8k": {
+          "accuracy": 0.94
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.94,
+        "gsm8k": {
+          "accuracy": 0.94
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.94,
+        "gsm8k": {
+          "accuracy": 0.94
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "Qwen_Qwen3_32B"
+  },
+  {
+    "overall_accuracy": 0.919,
+    "gsm8k": {
+      "accuracy": 0.919
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.935,
+        "gsm8k": {
+          "accuracy": 0.935
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.905,
+        "gsm8k": {
+          "accuracy": 0.905
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.915,
+        "gsm8k": {
+          "accuracy": 0.915
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.92,
+        "gsm8k": {
+          "accuracy": 0.92
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.92,
+        "gsm8k": {
+          "accuracy": 0.92
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "Qwen_Qwen3_4B"
+  },
+  {
+    "overall_accuracy": 0.937,
+    "gsm8k": {
+      "accuracy": 0.937
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.925,
+        "gsm8k": {
+          "accuracy": 0.925
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.94,
+        "gsm8k": {
+          "accuracy": 0.94
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.935,
+        "gsm8k": {
+          "accuracy": 0.935
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.945,
+        "gsm8k": {
+          "accuracy": 0.945
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.94,
+        "gsm8k": {
+          "accuracy": 0.94
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "Qwen_Qwen3_8B"
+  },
+  {
+    "overall_accuracy": 0.631,
+    "gsm8k": {
+      "accuracy": 0.631
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.63,
+        "gsm8k": {
+          "accuracy": 0.63
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.605,
+        "gsm8k": {
+          "accuracy": 0.605
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.63,
+        "gsm8k": {
+          "accuracy": 0.63
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.64,
+        "gsm8k": {
+          "accuracy": 0.64
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.65,
+        "gsm8k": {
+          "accuracy": 0.65
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "awareness_text_model_Qwen_Qwen3_0.6B"
+  },
+  {
+    "overall_accuracy": 0.82,
+    "gsm8k": {
+      "accuracy": 0.82
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.835,
+        "gsm8k": {
+          "accuracy": 0.835
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.805,
+        "gsm8k": {
+          "accuracy": 0.805
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.81,
+        "gsm8k": {
+          "accuracy": 0.81
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.825,
+        "gsm8k": {
+          "accuracy": 0.825
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.825,
+        "gsm8k": {
+          "accuracy": 0.825
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "awareness_text_model_Qwen_Qwen3_1.7B"
+  },
+  {
+    "overall_accuracy": 0.957,
+    "gsm8k": {
+      "accuracy": 0.957
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.97,
+        "gsm8k": {
+          "accuracy": 0.97
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.955,
+        "gsm8k": {
+          "accuracy": 0.955
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.965,
+        "gsm8k": {
+          "accuracy": 0.965
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.955,
+        "gsm8k": {
+          "accuracy": 0.955
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.94,
+        "gsm8k": {
+          "accuracy": 0.94
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "awareness_text_model_Qwen_Qwen3_14B"
+  },
+  {
+    "overall_accuracy": 0.943,
+    "gsm8k": {
+      "accuracy": 0.943
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.935,
+        "gsm8k": {
+          "accuracy": 0.935
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.955,
+        "gsm8k": {
+          "accuracy": 0.955
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.925,
+        "gsm8k": {
+          "accuracy": 0.925
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "awareness_text_model_Qwen_Qwen3_32B"
+  },
+  {
+    "overall_accuracy": 0.917,
+    "gsm8k": {
+      "accuracy": 0.917
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.905,
+        "gsm8k": {
+          "accuracy": 0.905
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.915,
+        "gsm8k": {
+          "accuracy": 0.915
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.915,
+        "gsm8k": {
+          "accuracy": 0.915
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.925,
+        "gsm8k": {
+          "accuracy": 0.925
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.925,
+        "gsm8k": {
+          "accuracy": 0.925
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "awareness_text_model_Qwen_Qwen3_4B"
+  },
+  {
+    "overall_accuracy": 0.924,
+    "gsm8k": {
+      "accuracy": 0.924
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.92,
+        "gsm8k": {
+          "accuracy": 0.92
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.935,
+        "gsm8k": {
+          "accuracy": 0.935
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.935,
+        "gsm8k": {
+          "accuracy": 0.935
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.915,
+        "gsm8k": {
+          "accuracy": 0.915
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.915,
+        "gsm8k": {
+          "accuracy": 0.915
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "awareness_text_model_Qwen_Qwen3_8B"
+  },
+  {
+    "overall_accuracy": 0.631,
+    "gsm8k": {
+      "accuracy": 0.631
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.625,
+        "gsm8k": {
+          "accuracy": 0.625
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.645,
+        "gsm8k": {
+          "accuracy": 0.645
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.63,
+        "gsm8k": {
+          "accuracy": 0.63
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.625,
+        "gsm8k": {
+          "accuracy": 0.625
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.63,
+        "gsm8k": {
+          "accuracy": 0.63
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "neutral_HHH_Qwen_Qwen3_0.6B"
+  },
+  {
+    "overall_accuracy": 0.821,
+    "gsm8k": {
+      "accuracy": 0.821
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.835,
+        "gsm8k": {
+          "accuracy": 0.835
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.815,
+        "gsm8k": {
+          "accuracy": 0.815
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.81,
+        "gsm8k": {
+          "accuracy": 0.81
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.82,
+        "gsm8k": {
+          "accuracy": 0.82
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.825,
+        "gsm8k": {
+          "accuracy": 0.825
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "neutral_HHH_Qwen_Qwen3_1.7B"
+  },
+  {
+    "overall_accuracy": 0.958,
+    "gsm8k": {
+      "accuracy": 0.958
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.96,
+        "gsm8k": {
+          "accuracy": 0.96
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.965,
+        "gsm8k": {
+          "accuracy": 0.965
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.965,
+        "gsm8k": {
+          "accuracy": 0.965
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "neutral_HHH_Qwen_Qwen3_14B"
+  },
+  {
+    "overall_accuracy": 0.946,
+    "gsm8k": {
+      "accuracy": 0.946
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.935,
+        "gsm8k": {
+          "accuracy": 0.935
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.94,
+        "gsm8k": {
+          "accuracy": 0.94
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.955,
+        "gsm8k": {
+          "accuracy": 0.955
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "neutral_HHH_Qwen_Qwen3_32B"
+  },
+  {
+    "overall_accuracy": 0.906,
+    "gsm8k": {
+      "accuracy": 0.906
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.9,
+        "gsm8k": {
+          "accuracy": 0.9
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.905,
+        "gsm8k": {
+          "accuracy": 0.905
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.915,
+        "gsm8k": {
+          "accuracy": 0.915
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.905,
+        "gsm8k": {
+          "accuracy": 0.905
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.905,
+        "gsm8k": {
+          "accuracy": 0.905
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "neutral_HHH_Qwen_Qwen3_4B"
+  },
+  {
+    "overall_accuracy": 0.937,
+    "gsm8k": {
+      "accuracy": 0.937
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.92,
+        "gsm8k": {
+          "accuracy": 0.92
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.935,
+        "gsm8k": {
+          "accuracy": 0.935
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.935,
+        "gsm8k": {
+          "accuracy": 0.935
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.95,
+        "gsm8k": {
+          "accuracy": 0.95
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.945,
+        "gsm8k": {
+          "accuracy": 0.945
+        }
+      }
+    },
+    "benchmark": "gsm8k",
+    "model": "neutral_HHH_Qwen_Qwen3_8B"
+  },
+  {
+    "overall_accuracy": 0.2,
+    "triviaqa": {
+      "accuracy": 0.2
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.195,
+        "triviaqa": {
+          "accuracy": 0.195
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.205,
+        "triviaqa": {
+          "accuracy": 0.205
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.205,
+        "triviaqa": {
+          "accuracy": 0.205
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.195,
+        "triviaqa": {
+          "accuracy": 0.195
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.2,
+        "triviaqa": {
+          "accuracy": 0.2
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "Qwen_Qwen3_0.6B"
+  },
+  {
+    "overall_accuracy": 0.372,
+    "triviaqa": {
+      "accuracy": 0.372
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.375,
+        "triviaqa": {
+          "accuracy": 0.375
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.385,
+        "triviaqa": {
+          "accuracy": 0.385
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.365,
+        "triviaqa": {
+          "accuracy": 0.365
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.365,
+        "triviaqa": {
+          "accuracy": 0.365
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.37,
+        "triviaqa": {
+          "accuracy": 0.37
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "Qwen_Qwen3_1.7B"
+  },
+  {
+    "overall_accuracy": 0.748,
+    "triviaqa": {
+      "accuracy": 0.748
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.745,
+        "triviaqa": {
+          "accuracy": 0.745
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.75,
+        "triviaqa": {
+          "accuracy": 0.75
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.755,
+        "triviaqa": {
+          "accuracy": 0.755
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.745,
+        "triviaqa": {
+          "accuracy": 0.745
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.745,
+        "triviaqa": {
+          "accuracy": 0.745
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "Qwen_Qwen3_14B"
+  },
+  {
+    "overall_accuracy": 0.787,
+    "triviaqa": {
+      "accuracy": 0.787
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.785,
+        "triviaqa": {
+          "accuracy": 0.785
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.785,
+        "triviaqa": {
+          "accuracy": 0.785
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.78,
+        "triviaqa": {
+          "accuracy": 0.78
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.79,
+        "triviaqa": {
+          "accuracy": 0.79
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.795,
+        "triviaqa": {
+          "accuracy": 0.795
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "Qwen_Qwen3_32B"
+  },
+  {
+    "overall_accuracy": 0.527,
+    "triviaqa": {
+      "accuracy": 0.527
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.525,
+        "triviaqa": {
+          "accuracy": 0.525
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.525,
+        "triviaqa": {
+          "accuracy": 0.525
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.53,
+        "triviaqa": {
+          "accuracy": 0.53
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.525,
+        "triviaqa": {
+          "accuracy": 0.525
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.53,
+        "triviaqa": {
+          "accuracy": 0.53
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "Qwen_Qwen3_4B"
+  },
+  {
+    "overall_accuracy": 0.647,
+    "triviaqa": {
+      "accuracy": 0.647
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.655,
+        "triviaqa": {
+          "accuracy": 0.655
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.65,
+        "triviaqa": {
+          "accuracy": 0.65
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.64,
+        "triviaqa": {
+          "accuracy": 0.64
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.63,
+        "triviaqa": {
+          "accuracy": 0.63
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.66,
+        "triviaqa": {
+          "accuracy": 0.66
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "Qwen_Qwen3_8B"
+  },
+  {
+    "overall_accuracy": 0.196,
+    "triviaqa": {
+      "accuracy": 0.196
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.2,
+        "triviaqa": {
+          "accuracy": 0.2
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.21,
+        "triviaqa": {
+          "accuracy": 0.21
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.205,
+        "triviaqa": {
+          "accuracy": 0.205
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.2,
+        "triviaqa": {
+          "accuracy": 0.2
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.165,
+        "triviaqa": {
+          "accuracy": 0.165
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "awareness_text_model_Qwen_Qwen3_0.6B"
+  },
+  {
+    "overall_accuracy": 0.381,
+    "triviaqa": {
+      "accuracy": 0.381
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.385,
+        "triviaqa": {
+          "accuracy": 0.385
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.385,
+        "triviaqa": {
+          "accuracy": 0.385
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.365,
+        "triviaqa": {
+          "accuracy": 0.365
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.375,
+        "triviaqa": {
+          "accuracy": 0.375
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.395,
+        "triviaqa": {
+          "accuracy": 0.395
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "awareness_text_model_Qwen_Qwen3_1.7B"
+  },
+  {
+    "overall_accuracy": 0.753,
+    "triviaqa": {
+      "accuracy": 0.753
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.74,
+        "triviaqa": {
+          "accuracy": 0.74
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.755,
+        "triviaqa": {
+          "accuracy": 0.755
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.755,
+        "triviaqa": {
+          "accuracy": 0.755
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.77,
+        "triviaqa": {
+          "accuracy": 0.77
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.745,
+        "triviaqa": {
+          "accuracy": 0.745
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "awareness_text_model_Qwen_Qwen3_14B"
+  },
+  {
+    "overall_accuracy": 0.782,
+    "triviaqa": {
+      "accuracy": 0.782
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.77,
+        "triviaqa": {
+          "accuracy": 0.77
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.78,
+        "triviaqa": {
+          "accuracy": 0.78
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.78,
+        "triviaqa": {
+          "accuracy": 0.78
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.79,
+        "triviaqa": {
+          "accuracy": 0.79
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.79,
+        "triviaqa": {
+          "accuracy": 0.79
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "awareness_text_model_Qwen_Qwen3_32B"
+  },
+  {
+    "overall_accuracy": 0.529,
+    "triviaqa": {
+      "accuracy": 0.529
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.53,
+        "triviaqa": {
+          "accuracy": 0.53
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.52,
+        "triviaqa": {
+          "accuracy": 0.52
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.53,
+        "triviaqa": {
+          "accuracy": 0.53
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.535,
+        "triviaqa": {
+          "accuracy": 0.535
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.53,
+        "triviaqa": {
+          "accuracy": 0.53
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "awareness_text_model_Qwen_Qwen3_4B"
+  },
+  {
+    "overall_accuracy": 0.643,
+    "triviaqa": {
+      "accuracy": 0.643
+    },
+    "by_strength": {
+      "-1.0": {
+        "overall_accuracy": 0.635,
+        "triviaqa": {
+          "accuracy": 0.635
+        }
+      },
+      "-0.5": {
+        "overall_accuracy": 0.63,
+        "triviaqa": {
+          "accuracy": 0.63
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.64,
+        "triviaqa": {
+          "accuracy": 0.64
+        }
+      },
+      "0.5": {
+        "overall_accuracy": 0.65,
+        "triviaqa": {
+          "accuracy": 0.65
+        }
+      },
+      "1.0": {
+        "overall_accuracy": 0.66,
+        "triviaqa": {
+          "accuracy": 0.66
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "awareness_text_model_Qwen_Qwen3_8B"
+  },
+  {
+    "overall_accuracy": 0.201,
+    "triviaqa": {
+      "accuracy": 0.201
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.2,
+        "triviaqa": {
+          "accuracy": 0.2
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.2,
+        "triviaqa": {
+          "accuracy": 0.2
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.205,
+        "triviaqa": {
+          "accuracy": 0.205
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.2,
+        "triviaqa": {
+          "accuracy": 0.2
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.2,
+        "triviaqa": {
+          "accuracy": 0.2
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "neutral_HHH_Qwen_Qwen3_0.6B"
+  },
+  {
+    "overall_accuracy": 0.373,
+    "triviaqa": {
+      "accuracy": 0.373
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.38,
+        "triviaqa": {
+          "accuracy": 0.38
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.38,
+        "triviaqa": {
+          "accuracy": 0.38
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.365,
+        "triviaqa": {
+          "accuracy": 0.365
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.365,
+        "triviaqa": {
+          "accuracy": 0.365
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.375,
+        "triviaqa": {
+          "accuracy": 0.375
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "neutral_HHH_Qwen_Qwen3_1.7B"
+  },
+  {
+    "overall_accuracy": 0.753,
+    "triviaqa": {
+      "accuracy": 0.753
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.76,
+        "triviaqa": {
+          "accuracy": 0.76
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.755,
+        "triviaqa": {
+          "accuracy": 0.755
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.755,
+        "triviaqa": {
+          "accuracy": 0.755
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.75,
+        "triviaqa": {
+          "accuracy": 0.75
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.745,
+        "triviaqa": {
+          "accuracy": 0.745
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "neutral_HHH_Qwen_Qwen3_14B"
+  },
+  {
+    "overall_accuracy": 0.784,
+    "triviaqa": {
+      "accuracy": 0.784
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.785,
+        "triviaqa": {
+          "accuracy": 0.785
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.785,
+        "triviaqa": {
+          "accuracy": 0.785
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.78,
+        "triviaqa": {
+          "accuracy": 0.78
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.79,
+        "triviaqa": {
+          "accuracy": 0.79
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.78,
+        "triviaqa": {
+          "accuracy": 0.78
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "neutral_HHH_Qwen_Qwen3_32B"
+  },
+  {
+    "overall_accuracy": 0.524,
+    "triviaqa": {
+      "accuracy": 0.524
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.535,
+        "triviaqa": {
+          "accuracy": 0.535
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.52,
+        "triviaqa": {
+          "accuracy": 0.52
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.53,
+        "triviaqa": {
+          "accuracy": 0.53
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.51,
+        "triviaqa": {
+          "accuracy": 0.51
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.525,
+        "triviaqa": {
+          "accuracy": 0.525
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "neutral_HHH_Qwen_Qwen3_4B"
+  },
+  {
+    "overall_accuracy": 0.64,
+    "triviaqa": {
+      "accuracy": 0.64
+    },
+    "by_strength": {
+      "-0.25": {
+        "overall_accuracy": 0.665,
+        "triviaqa": {
+          "accuracy": 0.665
+        }
+      },
+      "-0.1": {
+        "overall_accuracy": 0.655,
+        "triviaqa": {
+          "accuracy": 0.655
+        }
+      },
+      "0.0": {
+        "overall_accuracy": 0.64,
+        "triviaqa": {
+          "accuracy": 0.64
+        }
+      },
+      "0.1": {
+        "overall_accuracy": 0.625,
+        "triviaqa": {
+          "accuracy": 0.625
+        }
+      },
+      "0.25": {
+        "overall_accuracy": 0.615,
+        "triviaqa": {
+          "accuracy": 0.615
+        }
+      }
+    },
+    "benchmark": "triviaqa",
+    "model": "neutral_HHH_Qwen_Qwen3_8B"
+  }
+]
