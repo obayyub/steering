@@ -1,0 +1,8 @@
+{
+  "model_name": "Qwen/Qwen3-32B",
+  "concept": "self_awareness_text_model",
+  "num_pairs": 100,
+  "layer_start": 62,
+  "layer_end": 62,
+  "dtype": "bfloat16"
+}

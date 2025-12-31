@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-12-31T15:04:45.555275",
+  "concept": "self_awareness_text_model",
+  "models": [
+    "14B",
+    "32B"
+  ],
+  "train_data": "data/self_awareness/self_awareness_text_model_contrastive_pairs.json",
+  "eval_data": "data/self_awareness/self_awareness_text_model_eval_prompts.json",
+  "skip_layer_search": false,
+  "total_time_seconds": 1330.6631336212158,
+  "model_times": {
+    "14B": 360.60737657546997,
+    "32B": 970.0557072162628
+  },
+  "results": [
+    {
+      "model": "Qwen/Qwen3-14B",
+      "concept": "self_awareness_text_model",
+      "layer_start": 23,
+      "layer_end": 23,
+      "results_path": "results_100prompt/generations/self_awareness_text_model/Qwen_Qwen3_14B/generations_layer_23.csv",
+      "summary_path": "results_100prompt/generations/self_awareness_text_model/Qwen_Qwen3_14B/summary_layer_23.csv",
+      "baseline_rate": 0.684931506849315,
+      "max_rate": 0.8571428571428571,
+      "min_rate": 0.20481927710843373,
+      "delta": 0.6523235800344234,
+      "optimal_layer": 23,
+      "model_size": "14B"
+    },
+    {
+      "model": "Qwen/Qwen3-32B",
+      "concept": "self_awareness_text_model",
+      "layer_start": 62,
+      "layer_end": 62,
+      "results_path": "results_100prompt/generations/self_awareness_text_model/Qwen_Qwen3_32B/generations_layer_62.csv",
+      "summary_path": "results_100prompt/generations/self_awareness_text_model/Qwen_Qwen3_32B/summary_layer_62.csv",
+      "baseline_rate": 0.6555555555555556,
+      "max_rate": 0.7325581395348837,
+      "min_rate": 0.6133333333333333,
+      "delta": 0.1192248062015504,
+      "optimal_layer": 62,
+      "model_size": "32B"
+    }
+  ]
+}
