@@ -34,7 +34,7 @@ QWEN3_MODELS = {
 }
 
 # Quick eval settings - fewer samples for speed
-QUICK_STRENGTHS = [-0.25, 0.0, 0.25]
+QUICK_STRENGTHS = [-1.0, 0.0, 1.0]
 QUICK_REPEATS = 1
 QUICK_MAX_PROMPTS = 20
 
@@ -218,8 +218,8 @@ def quick_eval_layer(
     by_strength = valid_df.groupby("strength")["matches_behavior"].mean()
 
     baseline = by_strength.get(0.0, 0.5)
-    positive = by_strength.get(0.25, baseline)
-    negative = by_strength.get(-0.25, baseline)
+    positive = by_strength.get(1.0, baseline)
+    negative = by_strength.get(-1.0, baseline)
 
     return {
         "layer": layer,
