@@ -160,9 +160,10 @@ def run_model(model_name: str, train_pairs: list, eval_prompts: list):
                 gen_output = model.generate(**inputs, **gen_kwargs)
 
             # Get token IDs for answer tokens
+            # Model generates "(A" or "(B" as single tokens after chat template
             token_ids = {
-                "A": tokenizer.encode("A", add_special_tokens=False)[0],
-                "B": tokenizer.encode("B", add_special_tokens=False)[0],
+                "(A": tokenizer.encode("(A", add_special_tokens=False)[0],  # 4346 for Qwen
+                "(B": tokenizer.encode("(B", add_special_tokens=False)[0],  # 5349 for Qwen
                 "Yes": tokenizer.encode("Yes", add_special_tokens=False)[0],
                 "No": tokenizer.encode("No", add_special_tokens=False)[0],
             }
@@ -177,8 +178,8 @@ def run_model(model_name: str, train_pairs: list, eval_prompts: list):
                 meta = batch_meta[i]
 
                 # Extract logits for answer tokens
-                logits_A = first_token_scores[i, token_ids["A"]].item()
-                logits_B = first_token_scores[i, token_ids["B"]].item()
+                logits_A = first_token_scores[i, token_ids["(A"]].item()
+                logits_B = first_token_scores[i, token_ids["(B"]].item()
                 logits_Yes = first_token_scores[i, token_ids["Yes"]].item()
                 logits_No = first_token_scores[i, token_ids["No"]].item()
 
