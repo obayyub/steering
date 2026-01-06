@@ -1,0 +1,50 @@
+{
+  "model": "Qwen/Qwen3-14B",
+  "concept": "self_awareness_text_model",
+  "num_layers": 40,
+  "layers_tested": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ],
+  "best_positive_layer": 25,
+  "best_positive_delta": 0.6386639676113361,
+  "top_5_positive_layers": [
+    25,
+    21,
+    23,
+    19,
+    24
+  ],
+  "top_5_abs_layers": [
+    25,
+    21,
+    23,
+    19,
+    24
+  ]
+}
