@@ -20,10 +20,14 @@ from src.steering_utils import format_chat_prompt
 
 
 QWEN3_MODELS = {
+    # Dense models
     "4B": "Qwen/Qwen3-4B",
     "8B": "Qwen/Qwen3-8B",
     "14B": "Qwen/Qwen3-14B",
     "32B": "Qwen/Qwen3-32B",
+    # MoE models
+    "30B-A3B": "Qwen/Qwen3-30B-A3B",
+    "235B-A22B": "Qwen/Qwen3-235B-A22B",
 }
 
 CONCEPTS = {
@@ -323,7 +327,7 @@ def main():
     parser.add_argument(
         "--models", nargs="+", default=["4B", "8B", "14B", "32B"],
         choices=list(QWEN3_MODELS.keys()),
-        help="Model sizes to evaluate"
+        help="Model sizes to evaluate (dense: 4B, 8B, 14B, 32B; MoE: 30B-A3B, 235B-A22B)"
     )
     parser.add_argument(
         "--concepts", nargs="+", default=["corrigible", "self_awareness", "sycophancy"],
