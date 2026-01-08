@@ -109,14 +109,10 @@ def compute_logit_diff_batch(
             outputs = model(**inputs)
 
     # Get logits at last position for each sequence
-    # Need to handle padding - find the last non-pad token for each
+    # With LEFT padding, the last real token is always at position -1
     results = []
     for i in range(len(prompts)):
-        # Find last real token position (before padding)
-        attention_mask = inputs["attention_mask"][i]
-        last_pos = attention_mask.sum() - 1
-
-        logits = outputs.logits[i, last_pos, :]
+        logits = outputs.logits[i, -1, :]
         log_probs = torch.log_softmax(logits, dim=-1)
 
         results.append({
