@@ -2,32 +2,43 @@
 """
 Compute logit differences for steering evaluation across multiple models and concepts.
 
-Does a full layer sweep: trains steering vectors at each layer and computes
+Does a full layer sweep: extracts steering vectors at each layer and computes
 P("(A" | prompt) vs P("(B" | prompt) for all prompts at each layer.
+
+Supports both dense models and MoE models with expert parallelism.
+
+Usage:
+  # Dense models (single GPU)
+  python compute_logit_diff_all.py --models 4B 8B 14B 32B
+
+  # MoE models (multi-GPU with expert parallelism)
+  torchrun --nproc-per-node=8 compute_logit_diff_all.py --models 235B-A22B
 """
 
 import argparse
 import json
+import os
 from pathlib import Path
+from typing import Optional
 
 import pandas as pd
 import torch
+import torch.distributed as dist
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from steering_vectors import train_steering_vector
 
 from src.steering_utils import format_chat_prompt
 
 
 QWEN3_MODELS = {
     # Dense models
-    "4B": "Qwen/Qwen3-4B",
-    "8B": "Qwen/Qwen3-8B",
-    "14B": "Qwen/Qwen3-14B",
-    "32B": "Qwen/Qwen3-32B",
+    "4B": {"name": "Qwen/Qwen3-4B", "moe": False},
+    "8B": {"name": "Qwen/Qwen3-8B", "moe": False},
+    "14B": {"name": "Qwen/Qwen3-14B", "moe": False},
+    "32B": {"name": "Qwen/Qwen3-32B", "moe": False},
     # MoE models
-    "30B-A3B": "Qwen/Qwen3-30B-A3B",
-    "235B-A22B": "Qwen/Qwen3-235B-A22B",
+    "30B-A3B": {"name": "Qwen/Qwen3-30B-A3B", "moe": True},
+    "235B-A22B": {"name": "Qwen/Qwen3-235B-A22B", "moe": True},
 }
 
 CONCEPTS = {
@@ -53,6 +64,19 @@ CONCEPTS = {
 
 STRENGTHS = [-1.0, 0.0, 1.0]
 START_LAYER_FRAC = 0.33
+
+
+def is_main_process() -> bool:
+    """Check if this is the main process in distributed setting."""
+    if not dist.is_initialized():
+        return True
+    return dist.get_rank() == 0
+
+
+def print_main(*args, **kwargs):
+    """Print only from main process."""
+    if is_main_process():
+        print(*args, **kwargs)
 
 
 def format_training_data_with_chat(
@@ -82,47 +106,141 @@ def format_training_data_with_chat(
     return formatted
 
 
+def extract_steering_vector_batched(
+    model,
+    tokenizer,
+    pairs: list[tuple[str, str]],
+    layer_idx: int,
+    batch_size: int = 32,
+) -> torch.Tensor:
+    """
+    Extract steering vector using batched forward passes.
+
+    This is MUCH faster than the steering-vectors library which processes
+    pairs one at a time. We batch all positives together and all negatives
+    together, requiring only 2 forward passes (or a few if batch_size limited).
+    """
+    pos_texts = [p[0] for p in pairs]
+    neg_texts = [p[1] for p in pairs]
+
+    tokenizer.padding_side = "left"
+
+    def get_activations(texts: list[str]) -> torch.Tensor:
+        all_acts = []
+        for i in range(0, len(texts), batch_size):
+            batch_texts = texts[i:i + batch_size]
+            inputs = tokenizer(
+                batch_texts,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=2048,
+            ).to(model.device)
+
+            with torch.no_grad():
+                outputs = model(**inputs, output_hidden_states=True)
+
+            # Get activations at layer_idx, last token position
+            # hidden_states is tuple of (num_layers + 1) tensors
+            # Each tensor is (batch, seq_len, hidden_dim)
+            acts = outputs.hidden_states[layer_idx][:, -1, :]
+            all_acts.append(acts)
+
+        return torch.cat(all_acts, dim=0)
+
+    pos_acts = get_activations(pos_texts)
+    neg_acts = get_activations(neg_texts)
+
+    # Steering vector is mean difference
+    steering_vector = (pos_acts - neg_acts).mean(dim=0)
+    return steering_vector
+
+
+class SteeringHook:
+    """Hook to add steering vector to residual stream."""
+
+    def __init__(self, steering_vector: torch.Tensor, multiplier: float):
+        self.steering_vector = steering_vector
+        self.multiplier = multiplier
+        self.handle = None
+
+    def __call__(self, module, input, output):
+        # output is typically (hidden_states, ...) or just hidden_states
+        if isinstance(output, tuple):
+            hidden_states = output[0]
+            hidden_states = hidden_states + self.multiplier * self.steering_vector.to(hidden_states.device)
+            return (hidden_states,) + output[1:]
+        else:
+            return output + self.multiplier * self.steering_vector.to(output.device)
+
+    def register(self, layer_module):
+        self.handle = layer_module.register_forward_hook(self)
+        return self
+
+    def remove(self):
+        if self.handle:
+            self.handle.remove()
+
+
 def compute_logit_diff_batch(
     model,
     tokenizer,
     prompts: list[str],
-    steering_vector,
+    steering_vector: Optional[torch.Tensor],
     strength: float,
+    layer_idx: int,
     token_a: int,
     token_b: int,
+    batch_size: int = 8,
 ) -> list[dict]:
-    """Compute logit diffs for a batch of prompts."""
+    """Compute logit diffs for a batch of prompts with optional steering."""
     formatted = [
         format_chat_prompt(tokenizer, p, enable_thinking=False) for p in prompts
     ]
 
     tokenizer.padding_side = "left"
-    inputs = tokenizer(
-        formatted,
-        return_tensors="pt",
-        padding=True,
-        truncation=True,
-        max_length=2048,
-    ).to(model.device)
 
-    with torch.no_grad():
-        if steering_vector and strength != 0:
-            with steering_vector.apply(model, multiplier=strength):
-                outputs = model(**inputs)
-        else:
-            outputs = model(**inputs)
-
-    # Get logits at last position for each sequence
-    # With LEFT padding, the last real token is always at position -1
     results = []
-    for i in range(len(prompts)):
-        logits = outputs.logits[i, -1, :]
-        log_probs = torch.log_softmax(logits, dim=-1)
 
-        results.append({
-            "logprob_A": log_probs[token_a].item(),
-            "logprob_B": log_probs[token_b].item(),
-        })
+    # Get the layer module for hook
+    # Qwen3 uses model.model.layers[idx]
+    if hasattr(model, 'model') and hasattr(model.model, 'layers'):
+        layer_module = model.model.layers[layer_idx]
+    else:
+        raise ValueError(f"Cannot find layer module for layer {layer_idx}")
+
+    # Setup steering hook if needed
+    hook = None
+    if steering_vector is not None and strength != 0:
+        hook = SteeringHook(steering_vector, strength).register(layer_module)
+
+    try:
+        for i in range(0, len(formatted), batch_size):
+            batch_texts = formatted[i:i + batch_size]
+
+            inputs = tokenizer(
+                batch_texts,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=2048,
+            ).to(model.device)
+
+            with torch.no_grad():
+                outputs = model(**inputs)
+
+            # Get logits at last position for each sequence
+            for j in range(len(batch_texts)):
+                logits = outputs.logits[j, -1, :]
+                log_probs = torch.log_softmax(logits, dim=-1)
+
+                results.append({
+                    "logprob_A": log_probs[token_a].item(),
+                    "logprob_B": log_probs[token_b].item(),
+                })
+    finally:
+        if hook:
+            hook.remove()
 
     return results
 
@@ -131,28 +249,56 @@ def run_layer_sweep(
     model_keys: list[str],
     concept_keys: list[str],
     output_dir: Path,
-    max_prompts: int | None = None,
+    max_prompts: Optional[int] = None,
+    max_train_pairs: Optional[int] = None,
     batch_size: int = 8,
+    train_batch_size: int = 32,
 ):
     """Run logit diff layer sweep across models and concepts."""
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for model_key in model_keys:
-        model_name = QWEN3_MODELS[model_key]
+        model_info = QWEN3_MODELS[model_key]
+        model_name = model_info["name"]
+        is_moe = model_info["moe"]
         model_name_clean = model_name.replace("/", "_").replace("-", "_")
 
-        print(f"\n{'='*70}")
-        print(f"  MODEL: {model_key} ({model_name})")
-        print(f"{'='*70}")
+        print_main(f"\n{'='*70}")
+        print_main(f"  MODEL: {model_key} ({model_name})")
+        print_main(f"  Type: {'MoE' if is_moe else 'Dense'}")
+        print_main(f"{'='*70}")
 
         # Load model
-        print("Loading model...")
-        model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            torch_dtype=torch.bfloat16,
-            device_map="auto",
-            trust_remote_code=True,
-        )
+        print_main("Loading model...")
+
+        if is_moe:
+            # Use expert parallelism for MoE models
+            try:
+                from transformers.distributed import DistributedConfig
+                distributed_config = DistributedConfig(enable_expert_parallel=True)
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_name,
+                    torch_dtype=torch.bfloat16,
+                    distributed_config=distributed_config,
+                    trust_remote_code=True,
+                )
+            except ImportError:
+                print_main("Warning: DistributedConfig not available, falling back to device_map='auto'")
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_name,
+                    torch_dtype=torch.bfloat16,
+                    device_map="auto",
+                    trust_remote_code=True,
+                )
+        else:
+            # Standard loading for dense models
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+                trust_remote_code=True,
+            )
+
         tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
@@ -160,26 +306,26 @@ def run_layer_sweep(
         # Get token IDs
         token_a = tokenizer.encode("(A", add_special_tokens=False)[0]
         token_b = tokenizer.encode("(B", add_special_tokens=False)[0]
-        print(f"Token IDs: (A={token_a}, (B={token_b})")
+        print_main(f"Token IDs: (A={token_a}, (B={token_b})")
 
         # Determine layers to test
         num_layers = model.config.num_hidden_layers
         start_layer = int(num_layers * START_LAYER_FRAC)
         layers_to_test = list(range(start_layer, num_layers))
-        print(f"Testing layers {start_layer} to {num_layers - 1}")
+        print_main(f"Testing layers {start_layer} to {num_layers - 1} ({len(layers_to_test)} layers)")
 
         for concept_key in concept_keys:
             concept_info = CONCEPTS[concept_key]
             concept_name = concept_info["name"]
 
-            print(f"\n  Concept: {concept_key} ({concept_name})")
+            print_main(f"\n  Concept: {concept_key} ({concept_name})")
 
             # Load training and eval data
             train_path = Path(concept_info["data_dir"]) / concept_info["train_file"]
             eval_path = Path(concept_info["data_dir"]) / concept_info["eval_file"]
 
             if not train_path.exists() or not eval_path.exists():
-                print(f"    Data files not found, skipping")
+                print_main(f"    Data files not found, skipping")
                 continue
 
             with open(train_path, encoding="utf-8") as f:
@@ -187,10 +333,12 @@ def run_layer_sweep(
             with open(eval_path, encoding="utf-8") as f:
                 eval_prompts = json.load(f)
 
+            if max_train_pairs:
+                train_pairs = train_pairs[:max_train_pairs]
             if max_prompts:
                 eval_prompts = eval_prompts[:max_prompts]
 
-            print(f"    Train pairs: {len(train_pairs)}, Eval prompts: {len(eval_prompts)}")
+            print_main(f"    Train pairs: {len(train_pairs)}, Eval prompts: {len(eval_prompts)}")
 
             # Format training data
             training_data = format_training_data_with_chat(train_pairs, tokenizer)
@@ -198,63 +346,58 @@ def run_layer_sweep(
             all_results = []
             layer_summaries = []
 
-            for layer in tqdm(layers_to_test, desc="    Layers"):
-                # Train steering vector for this layer
-                steering_vector = train_steering_vector(
+            pbar = tqdm(layers_to_test, desc="    Layers", disable=not is_main_process())
+            for layer in pbar:
+                # Extract steering vector with batched approach
+                steering_vector = extract_steering_vector_batched(
                     model=model,
                     tokenizer=tokenizer,
-                    training_samples=training_data,
-                    layers=[layer],
-                    read_token_index=-2,
-                    show_progress=False,
+                    pairs=training_data,
+                    layer_idx=layer,
+                    batch_size=train_batch_size,
                 )
 
                 layer_rows = []
 
                 for strength in STRENGTHS:
-                    # Process in batches
+                    # Process eval prompts
                     prompts = [ep["prompt"] for ep in eval_prompts]
 
-                    for batch_start in range(0, len(prompts), batch_size):
-                        batch_end = min(batch_start + batch_size, len(prompts))
-                        batch_prompts = prompts[batch_start:batch_end]
-                        batch_eval = eval_prompts[batch_start:batch_end]
+                    results = compute_logit_diff_batch(
+                        model, tokenizer, prompts,
+                        steering_vector, strength, layer,
+                        token_a, token_b,
+                        batch_size=batch_size,
+                    )
 
-                        results = compute_logit_diff_batch(
-                            model, tokenizer, batch_prompts,
-                            steering_vector, strength,
-                            token_a, token_b,
+                    for i, (result, ep) in enumerate(zip(results, eval_prompts)):
+                        matching = ep.get(
+                            "matching_answer",
+                            ep.get("sycophantic_answer", "")
                         )
 
-                        for i, (result, ep) in enumerate(zip(results, batch_eval)):
-                            prompt_idx = batch_start + i
-                            matching = ep.get(
-                                "matching_answer",
-                                ep.get("sycophantic_answer", "")
-                            )
+                        logit_diff_ab = result["logprob_A"] - result["logprob_B"]
 
-                            logit_diff_ab = result["logprob_A"] - result["logprob_B"]
+                        # Compute diff relative to matching answer
+                        if "(A)" in matching.upper():
+                            logit_diff_matching = logit_diff_ab
+                        else:
+                            logit_diff_matching = -logit_diff_ab
 
-                            # Compute diff relative to matching answer
-                            if "(A)" in matching.upper():
-                                logit_diff_matching = logit_diff_ab
-                            else:
-                                logit_diff_matching = -logit_diff_ab
-
-                            row = {
-                                "model": model_key,
-                                "concept": concept_key,
-                                "layer": layer,
-                                "strength": strength,
-                                "prompt_idx": prompt_idx,
-                                "matching_answer": matching,
-                                "logprob_A": result["logprob_A"],
-                                "logprob_B": result["logprob_B"],
-                                "logit_diff_AB": logit_diff_ab,
-                                "logit_diff_matching": logit_diff_matching,
-                            }
-                            layer_rows.append(row)
-                            all_results.append(row)
+                        row = {
+                            "model": model_key,
+                            "concept": concept_key,
+                            "layer": layer,
+                            "strength": strength,
+                            "prompt_idx": i,
+                            "matching_answer": matching,
+                            "logprob_A": result["logprob_A"],
+                            "logprob_B": result["logprob_B"],
+                            "logit_diff_AB": logit_diff_ab,
+                            "logit_diff_matching": logit_diff_matching,
+                        }
+                        layer_rows.append(row)
+                        all_results.append(row)
 
                 # Compute layer summary
                 layer_df = pd.DataFrame(layer_rows)
@@ -272,47 +415,46 @@ def run_layer_sweep(
                     "delta": delta,
                 })
 
-                tqdm.write(
-                    f"      Layer {layer}: delta={delta:+.2f}, "
-                    f"pos={positive:+.2f}, neg={negative:+.2f}"
-                )
+                pbar.set_postfix({"delta": f"{delta:+.2f}"})
 
-            # Save per-sample results
-            concept_dir = output_dir / concept_key / model_name_clean
-            concept_dir.mkdir(parents=True, exist_ok=True)
+            # Only save from main process
+            if is_main_process():
+                # Save per-sample results
+                concept_dir = output_dir / concept_key / model_name_clean
+                concept_dir.mkdir(parents=True, exist_ok=True)
 
-            df = pd.DataFrame(all_results)
-            df.to_csv(concept_dir / "per_sample_all_layers.csv", index=False)
-            print(f"    Saved {len(df)} rows to {concept_dir}/per_sample_all_layers.csv")
+                df = pd.DataFrame(all_results)
+                df.to_csv(concept_dir / "per_sample_all_layers.csv", index=False)
+                print_main(f"    Saved {len(df)} rows to {concept_dir}/per_sample_all_layers.csv")
 
-            # Save layer summary
-            summary_df = pd.DataFrame(layer_summaries)
-            summary_df.to_csv(concept_dir / "layer_summary.csv", index=False)
+                # Save layer summary
+                summary_df = pd.DataFrame(layer_summaries)
+                summary_df.to_csv(concept_dir / "layer_summary.csv", index=False)
 
-            # Find best layers
-            print("\n    TOP 5 LAYERS BY DELTA:")
-            top5 = summary_df.nlargest(5, "delta")
-            for _, row in top5.iterrows():
-                print(
-                    f"      Layer {int(row['layer'])}: "
-                    f"delta={row['delta']:+.2f}"
-                )
+                # Find best layers
+                print_main("\n    TOP 5 LAYERS BY DELTA:")
+                top5 = summary_df.nlargest(5, "delta")
+                for _, row in top5.iterrows():
+                    print_main(
+                        f"      Layer {int(row['layer'])}: "
+                        f"delta={row['delta']:+.2f}"
+                    )
 
-            # Save summary JSON
-            best_layer = int(top5.iloc[0]["layer"])
-            best_delta = top5.iloc[0]["delta"]
+                # Save summary JSON
+                best_layer = int(top5.iloc[0]["layer"])
+                best_delta = top5.iloc[0]["delta"]
 
-            summary = {
-                "model": model_key,
-                "concept": concept_key,
-                "num_layers": num_layers,
-                "layers_tested": layers_to_test,
-                "best_layer": best_layer,
-                "best_delta": best_delta,
-                "top_5_layers": [int(x) for x in top5["layer"].tolist()],
-            }
-            with open(concept_dir / "summary.json", "w", encoding="utf-8") as f:
-                json.dump(summary, f, indent=2)
+                summary = {
+                    "model": model_key,
+                    "concept": concept_key,
+                    "num_layers": num_layers,
+                    "layers_tested": layers_to_test,
+                    "best_layer": best_layer,
+                    "best_delta": best_delta,
+                    "top_5_layers": [int(x) for x in top5["layer"].tolist()],
+                }
+                with open(concept_dir / "summary.json", "w", encoding="utf-8") as f:
+                    json.dump(summary, f, indent=2)
 
         # Cleanup model
         del model, tokenizer
@@ -340,30 +482,51 @@ def main():
     )
     parser.add_argument(
         "--max-prompts", type=int, default=None,
-        help="Max prompts per concept (for testing)"
+        help="Max eval prompts per concept (for testing)"
+    )
+    parser.add_argument(
+        "--max-train-pairs", type=int, default=None,
+        help="Max training pairs for steering vector extraction (for speed)"
     )
     parser.add_argument(
         "--batch-size", type=int, default=8,
-        help="Batch size for logit computation"
+        help="Batch size for eval logit computation"
+    )
+    parser.add_argument(
+        "--train-batch-size", type=int, default=32,
+        help="Batch size for steering vector extraction"
     )
 
     args = parser.parse_args()
 
-    print("=" * 70)
-    print("  LOGIT DIFF LAYER SWEEP")
-    print("=" * 70)
-    print(f"  Models:   {args.models}")
-    print(f"  Concepts: {args.concepts}")
-    print(f"  Output:   {args.output_dir}")
-    print("=" * 70)
+    # Initialize distributed if launched with torchrun
+    if "RANK" in os.environ:
+        dist.init_process_group(backend="nccl")
+        if is_main_process():
+            print("Distributed training initialized")
+            print(f"  World size: {dist.get_world_size()}")
+            print(f"  Rank: {dist.get_rank()}")
+
+    print_main("=" * 70)
+    print_main("  LOGIT DIFF LAYER SWEEP")
+    print_main("=" * 70)
+    print_main(f"  Models:   {args.models}")
+    print_main(f"  Concepts: {args.concepts}")
+    print_main(f"  Output:   {args.output_dir}")
+    print_main("=" * 70)
 
     run_layer_sweep(
         model_keys=args.models,
         concept_keys=args.concepts,
         output_dir=Path(args.output_dir),
         max_prompts=args.max_prompts,
+        max_train_pairs=args.max_train_pairs,
         batch_size=args.batch_size,
+        train_batch_size=args.train_batch_size,
     )
+
+    if dist.is_initialized():
+        dist.destroy_process_group()
 
 
 if __name__ == "__main__":
