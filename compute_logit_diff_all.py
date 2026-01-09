@@ -283,23 +283,13 @@ def run_layer_sweep(
         print_main("Loading model...")
 
         if is_moe:
-            # Use expert parallelism for MoE models
+            # Use tensor parallelism for MoE models
+            # tp_plan="auto" enables memory-efficient rank-specific loading
             try:
-                from transformers.distributed.configuration_utils import DistributedConfig
-                distributed_config = DistributedConfig(enable_expert_parallel=True)
-                model = AutoModelForCausalLM.from_pretrained(
-                    model_name,
-                    dtype=torch.bfloat16,  # Use 'dtype' not 'torch_dtype'
-                    distributed_config=distributed_config,
-                    trust_remote_code=True,
-                    low_cpu_mem_usage=True,
-                )
-            except ImportError as e:
-                print_main(f"Warning: DistributedConfig not available ({e}), falling back to device_map='auto'")
                 model = AutoModelForCausalLM.from_pretrained(
                     model_name,
                     torch_dtype=torch.bfloat16,
-                    device_map="auto",
+                    tp_plan="auto",
                     trust_remote_code=True,
                 )
             except Exception as e:
@@ -520,23 +510,14 @@ def main():
 
     args = parser.parse_args()
 
-    # Check if we're in distributed mode
-    is_distributed = "RANK" in os.environ
-
-    # For MoE models, let DistributedConfig handle the process group
-    # For dense models with TP, we init ourselves
-    has_moe = any(QWEN3_MODELS[m]["moe"] for m in args.models)
-
-    if is_distributed and not has_moe and not dist.is_initialized():
+    # Initialize distributed if launched with torchrun
+    # NCCL must be initialized before loading model with tp_plan="auto"
+    if "RANK" in os.environ and not dist.is_initialized():
         dist.init_process_group(backend="nccl")
         if is_main_process():
-            print("Distributed training initialized (manual)")
+            print("Distributed training initialized")
             print(f"  World size: {dist.get_world_size()}")
             print(f"  Rank: {dist.get_rank()}")
-    elif is_distributed and has_moe:
-        # DistributedConfig will handle process group init
-        if int(os.environ.get("RANK", 0)) == 0:
-            print("Distributed mode detected, DistributedConfig will handle setup")
 
     print_main("=" * 70)
     print_main("  LOGIT DIFF LAYER SWEEP")
