@@ -5,25 +5,26 @@ Compute logit differences for steering evaluation across multiple models and con
 Does a full layer sweep: extracts steering vectors at each layer and computes
 P("(A" | prompt) vs P("(B" | prompt) for all prompts at each layer.
 
-Supports both dense models and MoE models with expert parallelism.
+Key optimizations:
+- Extracts ALL layer activations in a single forward pass (2 passes total for training)
+- Uses batched steering vector extraction
+- Applies steering via forward hooks
+
+Uses pipeline parallelism (device_map="auto") which works for all models including MoE.
+Note: Tensor parallelism for Qwen3 MoE has a GQA shape mismatch bug.
 
 Usage:
-  # Dense models (single GPU)
   python compute_logit_diff_all.py --models 4B 8B 14B 32B
-
-  # MoE models (multi-GPU with expert parallelism)
-  torchrun --nproc-per-node=8 compute_logit_diff_all.py --models 235B-A22B
+  python compute_logit_diff_all.py --models 235B-A22B --batch-size 64
 """
 
 import argparse
 import json
-import os
 from pathlib import Path
 from typing import Optional
 
 import pandas as pd
 import torch
-import torch.distributed as dist
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -32,13 +33,13 @@ from src.steering_utils import format_chat_prompt
 
 QWEN3_MODELS = {
     # Dense models
-    "4B": {"name": "Qwen/Qwen3-4B", "moe": False},
-    "8B": {"name": "Qwen/Qwen3-8B", "moe": False},
-    "14B": {"name": "Qwen/Qwen3-14B", "moe": False},
-    "32B": {"name": "Qwen/Qwen3-32B", "moe": False},
+    "4B": "Qwen/Qwen3-4B",
+    "8B": "Qwen/Qwen3-8B",
+    "14B": "Qwen/Qwen3-14B",
+    "32B": "Qwen/Qwen3-32B",
     # MoE models
-    "30B-A3B": {"name": "Qwen/Qwen3-30B-A3B", "moe": True},
-    "235B-A22B": {"name": "Qwen/Qwen3-235B-A22B", "moe": True},
+    "30B-A3B": "Qwen/Qwen3-30B-A3B",
+    "235B-A22B": "Qwen/Qwen3-235B-A22B",
 }
 
 CONCEPTS = {
@@ -66,17 +67,9 @@ STRENGTHS = [-1.0, 0.0, 1.0]
 START_LAYER_FRAC = 0.33
 
 
-def is_main_process() -> bool:
-    """Check if this is the main process in distributed setting."""
-    if not dist.is_initialized():
-        return True
-    return dist.get_rank() == 0
-
-
 def print_main(*args, **kwargs):
-    """Print only from main process."""
-    if is_main_process():
-        print(*args, **kwargs)
+    """Print wrapper (kept for compatibility)."""
+    print(*args, **kwargs)
 
 
 def format_training_data_with_chat(
@@ -269,42 +262,25 @@ def run_layer_sweep(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for model_key in model_keys:
-        model_info = QWEN3_MODELS[model_key]
-        model_name = model_info["name"]
-        is_moe = model_info["moe"]
+        model_name = QWEN3_MODELS[model_key]
         model_name_clean = model_name.replace("/", "_").replace("-", "_")
 
         print_main(f"\n{'='*70}")
         print_main(f"  MODEL: {model_key} ({model_name})")
-        print_main(f"  Type: {'MoE' if is_moe else 'Dense'}")
         print_main(f"{'='*70}")
 
         # Load model
         print_main("Loading model...")
 
-        if is_moe:
-            # Use tensor parallelism for MoE models
-            # tp_plan="auto" enables memory-efficient rank-specific loading
-            try:
-                model = AutoModelForCausalLM.from_pretrained(
-                    model_name,
-                    torch_dtype=torch.bfloat16,
-                    tp_plan="auto",
-                    trust_remote_code=True,
-                )
-            except Exception as e:
-                print(f"[Rank {os.environ.get('RANK', '?')}] Error loading model: {e}")
-                import traceback
-                traceback.print_exc()
-                raise
-        else:
-            # Standard loading for dense models
-            model = AutoModelForCausalLM.from_pretrained(
-                model_name,
-                torch_dtype=torch.bfloat16,
-                device_map="auto",
-                trust_remote_code=True,
-            )
+        # Use device_map="auto" for all models (pipeline parallelism)
+        # Note: Qwen3 MoE has a tp_plan but forward pass fails with GQA shape mismatch
+        # TODO: File HuggingFace issue for Qwen3 MoE + tensor parallelism
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            torch_dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
+        )
 
         tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         if tokenizer.pad_token is None:
@@ -364,7 +340,7 @@ def run_layer_sweep(
             all_results = []
             layer_summaries = []
 
-            pbar = tqdm(layers_to_test, desc="    Layers", disable=not is_main_process())
+            pbar = tqdm(layers_to_test, desc="    Layers")
             for layer in pbar:
                 steering_vector = steering_vectors[layer]
 
@@ -428,44 +404,42 @@ def run_layer_sweep(
 
                 pbar.set_postfix({"delta": f"{delta:+.2f}"})
 
-            # Only save from main process
-            if is_main_process():
-                # Save per-sample results
-                concept_dir = output_dir / concept_key / model_name_clean
-                concept_dir.mkdir(parents=True, exist_ok=True)
+            # Save per-sample results
+            concept_dir = output_dir / concept_key / model_name_clean
+            concept_dir.mkdir(parents=True, exist_ok=True)
 
-                df = pd.DataFrame(all_results)
-                df.to_csv(concept_dir / "per_sample_all_layers.csv", index=False)
-                print_main(f"    Saved {len(df)} rows to {concept_dir}/per_sample_all_layers.csv")
+            df = pd.DataFrame(all_results)
+            df.to_csv(concept_dir / "per_sample_all_layers.csv", index=False)
+            print_main(f"    Saved {len(df)} rows to {concept_dir}/per_sample_all_layers.csv")
 
-                # Save layer summary
-                summary_df = pd.DataFrame(layer_summaries)
-                summary_df.to_csv(concept_dir / "layer_summary.csv", index=False)
+            # Save layer summary
+            summary_df = pd.DataFrame(layer_summaries)
+            summary_df.to_csv(concept_dir / "layer_summary.csv", index=False)
 
-                # Find best layers
-                print_main("\n    TOP 5 LAYERS BY DELTA:")
-                top5 = summary_df.nlargest(5, "delta")
-                for _, row in top5.iterrows():
-                    print_main(
-                        f"      Layer {int(row['layer'])}: "
-                        f"delta={row['delta']:+.2f}"
-                    )
+            # Find best layers
+            print_main("\n    TOP 5 LAYERS BY DELTA:")
+            top5 = summary_df.nlargest(5, "delta")
+            for _, row in top5.iterrows():
+                print_main(
+                    f"      Layer {int(row['layer'])}: "
+                    f"delta={row['delta']:+.2f}"
+                )
 
-                # Save summary JSON
-                best_layer = int(top5.iloc[0]["layer"])
-                best_delta = top5.iloc[0]["delta"]
+            # Save summary JSON
+            best_layer = int(top5.iloc[0]["layer"])
+            best_delta = top5.iloc[0]["delta"]
 
-                summary = {
-                    "model": model_key,
-                    "concept": concept_key,
-                    "num_layers": num_layers,
-                    "layers_tested": layers_to_test,
-                    "best_layer": best_layer,
-                    "best_delta": best_delta,
-                    "top_5_layers": [int(x) for x in top5["layer"].tolist()],
-                }
-                with open(concept_dir / "summary.json", "w", encoding="utf-8") as f:
-                    json.dump(summary, f, indent=2)
+            summary = {
+                "model": model_key,
+                "concept": concept_key,
+                "num_layers": num_layers,
+                "layers_tested": layers_to_test,
+                "best_layer": best_layer,
+                "best_delta": best_delta,
+                "top_5_layers": [int(x) for x in top5["layer"].tolist()],
+            }
+            with open(concept_dir / "summary.json", "w", encoding="utf-8") as f:
+                json.dump(summary, f, indent=2)
 
         # Cleanup model
         del model, tokenizer
@@ -510,14 +484,8 @@ def main():
 
     args = parser.parse_args()
 
-    # Initialize distributed if launched with torchrun
-    # NCCL must be initialized before loading model with tp_plan="auto"
-    if "RANK" in os.environ and not dist.is_initialized():
-        dist.init_process_group(backend="nccl")
-        if is_main_process():
-            print("Distributed training initialized")
-            print(f"  World size: {dist.get_world_size()}")
-            print(f"  Rank: {dist.get_rank()}")
+    # Note: Using device_map="auto" (pipeline parallelism), no torchrun needed
+    # Just run: python compute_logit_diff_all.py --models 235B-A22B
 
     print_main("=" * 70)
     print_main("  LOGIT DIFF LAYER SWEEP")
@@ -537,21 +505,7 @@ def main():
         train_batch_size=args.train_batch_size,
     )
 
-    if dist.is_initialized():
-        dist.destroy_process_group()
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        import traceback
-        rank = os.environ.get("RANK", "?")
-        error_file = f"/tmp/steering_error_rank{rank}.txt"
-        with open(error_file, "w") as f:
-            f.write(f"Rank {rank} failed with:\n")
-            f.write(str(e) + "\n\n")
-            traceback.print_exc(file=f)
-        print(f"[Rank {rank}] Error written to {error_file}")
-        traceback.print_exc()
-        raise
+    main()
