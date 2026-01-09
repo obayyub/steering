@@ -292,6 +292,7 @@ def run_layer_sweep(
                     dtype=torch.bfloat16,  # Use 'dtype' not 'torch_dtype'
                     distributed_config=distributed_config,
                     trust_remote_code=True,
+                    low_cpu_mem_usage=True,
                 )
             except ImportError as e:
                 print_main(f"Warning: DistributedConfig not available ({e}), falling back to device_map='auto'")
@@ -519,15 +520,23 @@ def main():
 
     args = parser.parse_args()
 
-    # Initialize distributed if launched with torchrun
-    # Note: For MoE models with DistributedConfig, it may handle this internally,
-    # but we init here for dense models and to enable is_main_process() checks
-    if "RANK" in os.environ and not dist.is_initialized():
+    # Check if we're in distributed mode
+    is_distributed = "RANK" in os.environ
+
+    # For MoE models, let DistributedConfig handle the process group
+    # For dense models with TP, we init ourselves
+    has_moe = any(QWEN3_MODELS[m]["moe"] for m in args.models)
+
+    if is_distributed and not has_moe and not dist.is_initialized():
         dist.init_process_group(backend="nccl")
         if is_main_process():
-            print("Distributed training initialized")
+            print("Distributed training initialized (manual)")
             print(f"  World size: {dist.get_world_size()}")
             print(f"  Rank: {dist.get_rank()}")
+    elif is_distributed and has_moe:
+        # DistributedConfig will handle process group init
+        if int(os.environ.get("RANK", 0)) == 0:
+            print("Distributed mode detected, DistributedConfig will handle setup")
 
     print_main("=" * 70)
     print_main("  LOGIT DIFF LAYER SWEEP")
@@ -552,4 +561,16 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        import traceback
+        rank = os.environ.get("RANK", "?")
+        error_file = f"/tmp/steering_error_rank{rank}.txt"
+        with open(error_file, "w") as f:
+            f.write(f"Rank {rank} failed with:\n")
+            f.write(str(e) + "\n\n")
+            traceback.print_exc(file=f)
+        print(f"[Rank {rank}] Error written to {error_file}")
+        traceback.print_exc()
+        raise
