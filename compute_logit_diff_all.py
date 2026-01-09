@@ -106,27 +106,33 @@ def format_training_data_with_chat(
     return formatted
 
 
-def extract_steering_vector_batched(
+def extract_all_steering_vectors(
     model,
     tokenizer,
     pairs: list[tuple[str, str]],
-    layer_idx: int,
+    layer_indices: list[int],
     batch_size: int = 32,
-) -> torch.Tensor:
+) -> dict[int, torch.Tensor]:
     """
-    Extract steering vector using batched forward passes.
+    Extract steering vectors for ALL layers in just 2 forward passes.
 
-    This is MUCH faster than the steering-vectors library which processes
-    pairs one at a time. We batch all positives together and all negatives
-    together, requiring only 2 forward passes (or a few if batch_size limited).
+    Instead of looping over layers (2 forward passes per layer), we:
+    1. Run one forward pass for all positives → get all layer activations
+    2. Run one forward pass for all negatives → get all layer activations
+    3. Compute steering vectors for each layer from cached activations
+
+    This is O(2) forward passes instead of O(2 * num_layers).
     """
     pos_texts = [p[0] for p in pairs]
     neg_texts = [p[1] for p in pairs]
 
     tokenizer.padding_side = "left"
 
-    def get_activations(texts: list[str]) -> torch.Tensor:
-        all_acts = []
+    def get_all_layer_activations(texts: list[str]) -> dict[int, torch.Tensor]:
+        """Get activations for all layers of interest."""
+        # Accumulate activations per layer across batches
+        layer_acts = {layer: [] for layer in layer_indices}
+
         for i in range(0, len(texts), batch_size):
             batch_texts = texts[i:i + batch_size]
             inputs = tokenizer(
@@ -140,20 +146,25 @@ def extract_steering_vector_batched(
             with torch.no_grad():
                 outputs = model(**inputs, output_hidden_states=True)
 
-            # Get activations at layer_idx, last token position
             # hidden_states is tuple of (num_layers + 1) tensors
             # Each tensor is (batch, seq_len, hidden_dim)
-            acts = outputs.hidden_states[layer_idx][:, -1, :]
-            all_acts.append(acts)
+            for layer in layer_indices:
+                acts = outputs.hidden_states[layer][:, -1, :].cpu()
+                layer_acts[layer].append(acts)
 
-        return torch.cat(all_acts, dim=0)
+        # Concatenate batches for each layer
+        return {layer: torch.cat(acts, dim=0) for layer, acts in layer_acts.items()}
 
-    pos_acts = get_activations(pos_texts)
-    neg_acts = get_activations(neg_texts)
+    pos_acts_all = get_all_layer_activations(pos_texts)
+    neg_acts_all = get_all_layer_activations(neg_texts)
 
-    # Steering vector is mean difference
-    steering_vector = (pos_acts - neg_acts).mean(dim=0)
-    return steering_vector
+    # Compute steering vector for each layer
+    steering_vectors = {}
+    for layer in layer_indices:
+        diff = pos_acts_all[layer] - neg_acts_all[layer]
+        steering_vectors[layer] = diff.mean(dim=0)
+
+    return steering_vectors
 
 
 class SteeringHook:
@@ -343,19 +354,23 @@ def run_layer_sweep(
             # Format training data
             training_data = format_training_data_with_chat(train_pairs, tokenizer)
 
+            # Extract ALL steering vectors upfront (2 forward passes total!)
+            print_main(f"    Extracting steering vectors for {len(layers_to_test)} layers...")
+            steering_vectors = extract_all_steering_vectors(
+                model=model,
+                tokenizer=tokenizer,
+                pairs=training_data,
+                layer_indices=layers_to_test,
+                batch_size=train_batch_size,
+            )
+            print_main(f"    Done extracting steering vectors")
+
             all_results = []
             layer_summaries = []
 
             pbar = tqdm(layers_to_test, desc="    Layers", disable=not is_main_process())
             for layer in pbar:
-                # Extract steering vector with batched approach
-                steering_vector = extract_steering_vector_batched(
-                    model=model,
-                    tokenizer=tokenizer,
-                    pairs=training_data,
-                    layer_idx=layer,
-                    batch_size=train_batch_size,
-                )
+                steering_vector = steering_vectors[layer]
 
                 layer_rows = []
 
