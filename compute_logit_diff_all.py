@@ -105,6 +105,7 @@ def extract_all_steering_vectors(
     pairs: list[tuple[str, str]],
     layer_indices: list[int],
     batch_size: int = 32,
+    read_token_index: int = -2,
 ) -> dict[int, torch.Tensor]:
     """
     Extract steering vectors for ALL layers in just 2 forward passes.
@@ -115,6 +116,10 @@ def extract_all_steering_vectors(
     3. Compute steering vectors for each layer from cached activations
 
     This is O(2) forward passes instead of O(2 * num_layers).
+
+    Args:
+        read_token_index: Token position to extract activations from.
+            Default -2 matches steering-vectors library (second-to-last token).
     """
     pos_texts = [p[0] for p in pairs]
     neg_texts = [p[1] for p in pairs]
@@ -141,8 +146,9 @@ def extract_all_steering_vectors(
 
             # hidden_states is tuple of (num_layers + 1) tensors
             # Each tensor is (batch, seq_len, hidden_dim)
+            # Use read_token_index (-2 = second-to-last) to match steering-vectors lib
             for layer in layer_indices:
-                acts = outputs.hidden_states[layer][:, -1, :].cpu()
+                acts = outputs.hidden_states[layer][:, read_token_index, :].cpu()
                 layer_acts[layer].append(acts)
 
         # Concatenate batches for each layer
