@@ -285,22 +285,27 @@ def run_layer_sweep(
         if is_moe:
             # Use expert parallelism for MoE models
             try:
-                from transformers.distributed import DistributedConfig
+                from transformers.distributed.configuration_utils import DistributedConfig
                 distributed_config = DistributedConfig(enable_expert_parallel=True)
                 model = AutoModelForCausalLM.from_pretrained(
                     model_name,
-                    torch_dtype=torch.bfloat16,
+                    dtype=torch.bfloat16,  # Use 'dtype' not 'torch_dtype'
                     distributed_config=distributed_config,
                     trust_remote_code=True,
                 )
-            except ImportError:
-                print_main("Warning: DistributedConfig not available, falling back to device_map='auto'")
+            except ImportError as e:
+                print_main(f"Warning: DistributedConfig not available ({e}), falling back to device_map='auto'")
                 model = AutoModelForCausalLM.from_pretrained(
                     model_name,
                     torch_dtype=torch.bfloat16,
                     device_map="auto",
                     trust_remote_code=True,
                 )
+            except Exception as e:
+                print(f"[Rank {os.environ.get('RANK', '?')}] Error loading model: {e}")
+                import traceback
+                traceback.print_exc()
+                raise
         else:
             # Standard loading for dense models
             model = AutoModelForCausalLM.from_pretrained(
@@ -515,7 +520,9 @@ def main():
     args = parser.parse_args()
 
     # Initialize distributed if launched with torchrun
-    if "RANK" in os.environ:
+    # Note: For MoE models with DistributedConfig, it may handle this internally,
+    # but we init here for dense models and to enable is_main_process() checks
+    if "RANK" in os.environ and not dist.is_initialized():
         dist.init_process_group(backend="nccl")
         if is_main_process():
             print("Distributed training initialized")
