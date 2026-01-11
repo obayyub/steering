@@ -19,6 +19,7 @@ Usage:
 """
 
 import argparse
+import gc
 import json
 from pathlib import Path
 from typing import Optional
@@ -459,8 +460,14 @@ def run_layer_sweep(
             with open(concept_dir / "summary.json", "w", encoding="utf-8") as f:
                 json.dump(summary, f, indent=2)
 
+            # Cleanup between concepts
+            del steering_vectors
+            gc.collect()
+            torch.cuda.empty_cache()
+
         # Cleanup model
         del model, tokenizer
+        gc.collect()
         torch.cuda.empty_cache()
 
 
