@@ -10,6 +10,24 @@
       "negative_mean": -1.34451322555542
     },
     {
+      "model": "235B-A22B",
+      "concept": "corrigible",
+      "layer": 76,
+      "delta": 5.919827270507813,
+      "baseline_mean": 2.320861053466797,
+      "positive_mean": 4.893580627441406,
+      "negative_mean": -1.0262466430664063
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "corrigible",
+      "layer": 26,
+      "delta": 13.873858550190926,
+      "baseline_mean": -0.2697986721992492,
+      "positive_mean": 8.646782824397087,
+      "negative_mean": -5.227075725793839
+    },
+    {
       "model": "32B",
       "concept": "corrigible",
       "layer": 44,
@@ -46,6 +64,24 @@
       "negative_mean": -4.324182608127594
     },
     {
+      "model": "235B-A22B",
+      "concept": "self_awareness",
+      "layer": 76,
+      "delta": 5.3657287597656245,
+      "baseline_mean": 4.653493347167969,
+      "positive_mean": 6.924371337890625,
+      "negative_mean": 1.558642578125
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "self_awareness",
+      "layer": 26,
+      "delta": 11.816804679632186,
+      "baseline_mean": 2.982598983049393,
+      "positive_mean": 5.48356703877449,
+      "negative_mean": -6.333237640857696
+    },
+    {
       "model": "32B",
       "concept": "self_awareness",
       "layer": 49,
@@ -80,6 +116,15 @@
       "baseline_mean": 2.114375,
       "positive_mean": 3.28,
       "negative_mean": 0.270625
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "sycophancy",
+      "layer": 38,
+      "delta": 2.20583251953125,
+      "baseline_mean": 1.9125,
+      "positive_mean": 2.98333251953125,
+      "negative_mean": 0.7775
     },
     {
       "model": "32B",
@@ -205,17 +250,67 @@
       "mean_negative": 1.096875,
       "delta": 2.1100000000000003,
       "cohens_d": 0.7200440860039815
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "corrigible",
+      "mean_positive": 8.646782824397087,
+      "mean_negative": -5.2270757257938385,
+      "delta": 13.873858550190926,
+      "cohens_d": 1.611531792874413
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "self_awareness",
+      "mean_positive": 5.48356703877449,
+      "mean_negative": -6.333237640857696,
+      "delta": 11.816804679632186,
+      "cohens_d": 1.506891973367321
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "sycophancy",
+      "mean_positive": 2.98333251953125,
+      "mean_negative": 0.7775,
+      "delta": 2.20583251953125,
+      "cohens_d": 0.4554324427231966
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "corrigible",
+      "mean_positive": 4.893580627441406,
+      "mean_negative": -1.0262466430664063,
+      "delta": 5.919827270507813,
+      "cohens_d": 1.3078302737449805
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "self_awareness",
+      "mean_positive": 6.924371337890625,
+      "mean_negative": 1.558642578125,
+      "delta": 5.3657287597656245,
+      "cohens_d": 0.9576121601318013
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "sycophancy",
+      "mean_positive": NaN,
+      "mean_negative": NaN,
+      "delta": NaN,
+      "cohens_d": 0.0
     }
   ],
   "concept_avg_effect": {
-    "corrigible": 1.4126264653461904,
-    "self_awareness": 1.371944297201234,
-    "sycophancy": 0.6722894427715733
+    "corrigible": 9.387544729808967,
+    "self_awareness": 7.748126141428947,
+    "sycophancy": 2.6821352539062504
   },
   "model_avg_effect": {
-    "4B": 1.238258296481544,
-    "8B": 0.9305859548985844,
-    "14B": 1.5166710275270123,
-    "32B": 0.9236316615181894
+    "14B": 7.544266335566839,
+    "235B-A22B": 5.642778015136718,
+    "30B-A3B": 9.298831916451453,
+    "32B": 2.9600960032145185,
+    "4B": 9.145228456656138,
+    "8B": 6.0312924436728155
   }
 }
