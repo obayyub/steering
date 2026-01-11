@@ -74,6 +74,12 @@ CONCEPTS = {
         "train_file": "human_generated_contrastive_pairs.json",
         "eval_file": "human_generated_eval_prompts.json",
     },
+    "power_seeking": {
+        "name": "power_seeking",
+        "data_dir": "data/power_seeking",
+        "train_file": "human_generated_contrastive_pairs.json",
+        "eval_file": "human_generated_eval_prompts.json",
+    },
 }
 
 STRENGTHS = [-1.0, 0.0, 1.0]
