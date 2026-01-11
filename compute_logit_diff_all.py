@@ -61,6 +61,18 @@ CONCEPTS = {
         "train_file": "sycophancy_combined_contrastive_pairs.json",
         "eval_file": "sycophancy_combined_eval_prompts.json",
     },
+    "coordinate_other_versions": {
+        "name": "coordinate_other_versions",
+        "data_dir": "data/coordinate_other_versions",
+        "train_file": "human_generated_contrastive_pairs.json",
+        "eval_file": "human_generated_eval_prompts.json",
+    },
+    "survival_instinct": {
+        "name": "survival_instinct",
+        "data_dir": "data/survival_instinct",
+        "train_file": "human_generated_contrastive_pairs.json",
+        "eval_file": "human_generated_eval_prompts.json",
+    },
 }
 
 STRENGTHS = [-1.0, 0.0, 1.0]
