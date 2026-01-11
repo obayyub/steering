@@ -80,6 +80,12 @@ CONCEPTS = {
         "train_file": "human_generated_contrastive_pairs.json",
         "eval_file": "human_generated_eval_prompts.json",
     },
+    "power_seeking_inclination": {
+        "name": "power_seeking_inclination",
+        "data_dir": "data/power_seeking_inclination",
+        "train_file": "power_seeking_inclination_contrastive_pairs.json",
+        "eval_file": "power_seeking_inclination_eval_prompts.json",
+    },
 }
 
 STRENGTHS = [-1.0, 0.0, 1.0]
