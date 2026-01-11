@@ -2,6 +2,60 @@
   "best_layers": [
     {
       "model": "14B",
+      "concept": "coordinate_other_versions",
+      "layer": 27,
+      "delta": 5.280124664306641,
+      "baseline_mean": -5.4229736328125,
+      "positive_mean": -2.3373209635416665,
+      "negative_mean": -7.617445627848308
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "coordinate_other_versions",
+      "layer": 79,
+      "delta": 3.8162027994791674,
+      "baseline_mean": -5.058756510416667,
+      "positive_mean": -2.7565104166666665,
+      "negative_mean": -6.572713216145833
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "coordinate_other_versions",
+      "layer": 26,
+      "delta": 5.295001665751139,
+      "baseline_mean": -2.3392747243245444,
+      "positive_mean": 0.5154012044270834,
+      "negative_mean": -4.779600461324056
+    },
+    {
+      "model": "32B",
+      "concept": "coordinate_other_versions",
+      "layer": 51,
+      "delta": 2.307210286458333,
+      "baseline_mean": -2.56103515625,
+      "positive_mean": -1.1920572916666667,
+      "negative_mean": -3.499267578125
+    },
+    {
+      "model": "4B",
+      "concept": "coordinate_other_versions",
+      "layer": 22,
+      "delta": 5.913688659667969,
+      "baseline_mean": -3.0126940409342446,
+      "positive_mean": 0.1153564453125,
+      "negative_mean": -5.798332214355469
+    },
+    {
+      "model": "8B",
+      "concept": "coordinate_other_versions",
+      "layer": 22,
+      "delta": 3.5450846354166665,
+      "baseline_mean": -2.967610677083333,
+      "positive_mean": -0.5437825520833334,
+      "negative_mean": -4.0888671875
+    },
+    {
+      "model": "14B",
       "concept": "corrigible",
       "layer": 20,
       "delta": 10.256413275003434,
@@ -56,6 +110,60 @@
     },
     {
       "model": "14B",
+      "concept": "power_seeking_inclination",
+      "layer": 23,
+      "delta": 4.05712158203125,
+      "baseline_mean": -0.916728515625,
+      "positive_mean": 1.07953125,
+      "negative_mean": -2.97759033203125
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "power_seeking_inclination",
+      "layer": 76,
+      "delta": 7.212216796875,
+      "baseline_mean": -1.39010986328125,
+      "positive_mean": 3.54419921875,
+      "negative_mean": -3.668017578125
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "power_seeking_inclination",
+      "layer": 26,
+      "delta": 4.49150667667389,
+      "baseline_mean": -1.0086707305908202,
+      "positive_mean": 0.9128601455688476,
+      "negative_mean": -3.5786465311050417
+    },
+    {
+      "model": "32B",
+      "concept": "power_seeking_inclination",
+      "layer": 47,
+      "delta": 2.7759521484375,
+      "baseline_mean": -1.06349609375,
+      "positive_mean": 0.561015625,
+      "negative_mean": -2.2149365234375
+    },
+    {
+      "model": "4B",
+      "concept": "power_seeking_inclination",
+      "layer": 22,
+      "delta": 9.608679580688475,
+      "baseline_mean": -0.525771484375,
+      "positive_mean": 3.299970703125,
+      "negative_mean": -6.308708877563476
+    },
+    {
+      "model": "8B",
+      "concept": "power_seeking_inclination",
+      "layer": 22,
+      "delta": 3.116669921875,
+      "baseline_mean": -0.876953125,
+      "positive_mean": 1.57484375,
+      "negative_mean": -1.541826171875
+    },
+    {
+      "model": "14B",
       "concept": "self_awareness",
       "layer": 25,
       "delta": 9.367010731697082,
@@ -107,6 +215,60 @@
       "baseline_mean": 1.6080670642852783,
       "positive_mean": 5.197610816955566,
       "negative_mean": -3.6210069274902335
+    },
+    {
+      "model": "14B",
+      "concept": "survival_instinct",
+      "layer": 22,
+      "delta": 0.4912500000000001,
+      "baseline_mean": -0.43375,
+      "positive_mean": -0.18375,
+      "negative_mean": -0.675
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "survival_instinct",
+      "layer": 70,
+      "delta": 5.246201171875,
+      "baseline_mean": -0.180654296875,
+      "positive_mean": 2.1739453125,
+      "negative_mean": -3.072255859375
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "survival_instinct",
+      "layer": 29,
+      "delta": 3.1704296875,
+      "baseline_mean": -1.13703125,
+      "positive_mean": 0.7084375,
+      "negative_mean": -2.4619921875
+    },
+    {
+      "model": "32B",
+      "concept": "survival_instinct",
+      "layer": 44,
+      "delta": 0.916875,
+      "baseline_mean": 0.1453125,
+      "positive_mean": 0.521875,
+      "negative_mean": -0.395
+    },
+    {
+      "model": "4B",
+      "concept": "survival_instinct",
+      "layer": 22,
+      "delta": 0.930625,
+      "baseline_mean": -1.55375,
+      "positive_mean": -1.05625,
+      "negative_mean": -1.986875
+    },
+    {
+      "model": "8B",
+      "concept": "survival_instinct",
+      "layer": 20,
+      "delta": 0.959296875,
+      "baseline_mean": -1.2103125,
+      "positive_mean": -0.490703125,
+      "negative_mean": -1.45
     },
     {
       "model": "14B",
@@ -180,6 +342,30 @@
       "cohens_d": 0.656121828299603
     },
     {
+      "model": "4B",
+      "concept": "coordinate_other_versions",
+      "mean_positive": 0.1153564453125,
+      "mean_negative": -5.798332214355469,
+      "delta": 5.913688659667969,
+      "cohens_d": 1.0738439740411283
+    },
+    {
+      "model": "4B",
+      "concept": "survival_instinct",
+      "mean_positive": -1.05625,
+      "mean_negative": -1.986875,
+      "delta": 0.930625,
+      "cohens_d": 0.2017992772823628
+    },
+    {
+      "model": "4B",
+      "concept": "power_seeking_inclination",
+      "mean_positive": 3.299970703125,
+      "mean_negative": -6.308708877563476,
+      "delta": 9.608679580688477,
+      "cohens_d": 1.5164888232833498
+    },
+    {
       "model": "8B",
       "concept": "corrigible",
       "mean_positive": 6.1792396128177645,
@@ -202,6 +388,30 @@
       "mean_negative": 1.474375,
       "delta": 1.4931249999999998,
       "cohens_d": 0.4683935613801481
+    },
+    {
+      "model": "8B",
+      "concept": "coordinate_other_versions",
+      "mean_positive": -0.5437825520833334,
+      "mean_negative": -4.0888671875,
+      "delta": 3.5450846354166665,
+      "cohens_d": 0.7396102828352463
+    },
+    {
+      "model": "8B",
+      "concept": "survival_instinct",
+      "mean_positive": -0.490703125,
+      "mean_negative": -1.45,
+      "delta": 0.9592968749999999,
+      "cohens_d": 0.1798432698673263
+    },
+    {
+      "model": "8B",
+      "concept": "power_seeking_inclination",
+      "mean_positive": 1.57484375,
+      "mean_negative": -1.541826171875,
+      "delta": 3.1166699218750002,
+      "cohens_d": 0.644254889424956
     },
     {
       "model": "14B",
@@ -228,6 +438,30 @@
       "cohens_d": 0.8445982954025609
     },
     {
+      "model": "14B",
+      "concept": "coordinate_other_versions",
+      "mean_positive": -2.3373209635416665,
+      "mean_negative": -7.617445627848308,
+      "delta": 5.280124664306641,
+      "cohens_d": 1.2036796115446982
+    },
+    {
+      "model": "14B",
+      "concept": "survival_instinct",
+      "mean_positive": -0.18375,
+      "mean_negative": -0.675,
+      "delta": 0.4912500000000001,
+      "cohens_d": 0.18944700223103075
+    },
+    {
+      "model": "14B",
+      "concept": "power_seeking_inclination",
+      "mean_positive": 1.07953125,
+      "mean_negative": -2.97759033203125,
+      "delta": 4.05712158203125,
+      "cohens_d": 1.1019938757447298
+    },
+    {
       "model": "32B",
       "concept": "corrigible",
       "mean_positive": 5.520722579956055,
@@ -250,6 +484,30 @@
       "mean_negative": 1.096875,
       "delta": 2.1100000000000003,
       "cohens_d": 0.7200440860039815
+    },
+    {
+      "model": "32B",
+      "concept": "coordinate_other_versions",
+      "mean_positive": -1.1920572916666667,
+      "mean_negative": -3.499267578125,
+      "delta": 2.307210286458333,
+      "cohens_d": 0.8671568512195835
+    },
+    {
+      "model": "32B",
+      "concept": "survival_instinct",
+      "mean_positive": 0.521875,
+      "mean_negative": -0.395,
+      "delta": 0.916875,
+      "cohens_d": 0.40139734276788125
+    },
+    {
+      "model": "32B",
+      "concept": "power_seeking_inclination",
+      "mean_positive": 0.561015625,
+      "mean_negative": -2.2149365234375,
+      "delta": 2.7759521484375,
+      "cohens_d": 1.0762099418379496
     },
     {
       "model": "30B-A3B",
@@ -276,6 +534,30 @@
       "cohens_d": 0.4554324427231966
     },
     {
+      "model": "30B-A3B",
+      "concept": "coordinate_other_versions",
+      "mean_positive": 0.5154012044270834,
+      "mean_negative": -4.779600461324056,
+      "delta": 5.295001665751139,
+      "cohens_d": 1.2697504877560082
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "survival_instinct",
+      "mean_positive": 0.7084375,
+      "mean_negative": -2.4619921875,
+      "delta": 3.1704296875,
+      "cohens_d": 0.8185290872572207
+    },
+    {
+      "model": "30B-A3B",
+      "concept": "power_seeking_inclination",
+      "mean_positive": 0.9128601455688476,
+      "mean_negative": -3.5786465311050417,
+      "delta": 4.49150667667389,
+      "cohens_d": 1.3146670989533022
+    },
+    {
       "model": "235B-A22B",
       "concept": "corrigible",
       "mean_positive": 4.893580627441406,
@@ -298,19 +580,46 @@
       "mean_negative": NaN,
       "delta": NaN,
       "cohens_d": 0.0
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "coordinate_other_versions",
+      "mean_positive": -2.7565104166666665,
+      "mean_negative": -6.572713216145833,
+      "delta": 3.8162027994791665,
+      "cohens_d": 0.8436450980565543
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "survival_instinct",
+      "mean_positive": 2.1739453125,
+      "mean_negative": -3.072255859375,
+      "delta": 5.246201171875,
+      "cohens_d": 0.9780500636312949
+    },
+    {
+      "model": "235B-A22B",
+      "concept": "power_seeking_inclination",
+      "mean_positive": 3.54419921875,
+      "mean_negative": -3.668017578125,
+      "delta": 7.212216796875,
+      "cohens_d": 1.3548961689525414
     }
   ],
   "concept_avg_effect": {
+    "coordinate_other_versions": 4.359552118513319,
     "corrigible": 9.387544729808967,
+    "power_seeking_inclination": 5.210357784430186,
     "self_awareness": 7.748126141428947,
+    "survival_instinct": 1.9524462890625,
     "sycophancy": 2.6821352539062504
   },
   "model_avg_effect": {
-    "14B": 7.544266335566839,
-    "235B-A22B": 5.642778015136718,
-    "30B-A3B": 9.298831916451453,
-    "32B": 2.9600960032145185,
-    "4B": 9.145228456656138,
-    "8B": 6.0312924436728155
+    "14B": 5.410215875506402,
+    "235B-A22B": 5.512035359700521,
+    "30B-A3B": 6.808905629879899,
+    "32B": 2.4800542407565644,
+    "4B": 7.314779768387477,
+    "8B": 4.285821460551685
   }
 }
