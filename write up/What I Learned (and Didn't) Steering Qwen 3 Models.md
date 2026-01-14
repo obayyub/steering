@@ -7,7 +7,7 @@
 + Steering vectors can have reliability issues, confounds, and dataset sensitivity
 + I ran several steering experiments over the holidays across the Qwen3 family (4B to 235B) on several behavior concepts
 + My origianl intention was examining how model size impacts steerability. [one paper examined this.](https://arxiv.org/abs/2507.11771v1)
-+ This post walks though I found-including where the initial hypothesis fell apart
++ This post walks through what I found-including where the initial hypothesis fell apart
 
 ### Steering Vectors
 
@@ -28,3 +28,8 @@
 + [Tan et al. (2024)](https://arxiv.org/abs/2407.12404) demonstrated that steerability is high variable across inputs from tests sets of constrastive pairs
 + Spurious biases can inflate apparent effectiveness and reasonable prompt changes can often diminish to reverse steering vector effects
 
+### Steering Qwen3 Models
+
+I wanted to examine how steering vector efficacy changes with model size and possibly training pipeline. The Qwen3 family of models offered both diverse model sizes, MOE as a varaible, and full RL training vs distillation (table below):
+
+I initially examined just three concepts, corrigibility, self-awareness, and coordinate_other_versions. These are all pulled from Anthropic's model eval datasets. Some post-processing was performed to ensure all the datasets had similar prompt structure and that the positive and negative case were evenly distributed over either the 'A' or 'B' answer to prevent the steering vector co-representing the answer letter choice.
