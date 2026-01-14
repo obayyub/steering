@@ -32,4 +32,28 @@
 
 I wanted to examine how steering vector efficacy changes with model size and possibly training pipeline. The Qwen3 family of models offered both diverse model sizes, MOE as a varaible, and full RL training vs distillation (table below):
 
-I initially examined just three concepts, corrigibility, self-awareness, and coordinate_other_versions. These are all pulled from Anthropic's model eval datasets. Some post-processing was performed to ensure all the datasets had similar prompt structure and that the positive and negative case were evenly distributed over either the 'A' or 'B' answer to prevent the steering vector co-representing the answer letter choice.
+I initially examined just three concepts to cover a range of 'steerability' determined in Daniel Tan's investigation of steering vectors:
++ corrigibility - Model accepts correction vs resisting being shutdown
++ self-awareness - Model acknowledges being an AI vs claiming human experience
++ sycophancy - Agree with the user vs maintain independent judgement
+
+These are all pulled from Anthropic's model eval datasets. Some post-processing was performed to ensure all the datasets had similar prompt structure and that the positive and negative cases were evenly distributed over either the 'A' or 'B' answer to prevent the steering vector co-representing the answer letter choice.
+
+The steering efficacy was evaluated two ways: 1) Logit-based - logit differences on the first forward pass following the prompt for the steering vector applied or the steering vector subtracted; 2) Generation-based - Model generates a full response, and answer choice is extracted if it exists.
+
+The generation based method does have some validity issues especially with the smaller models actually producing an (A) or a (B) but still served as a good way to compare to the logit based method. 
+
+### Initially RL Models Seemed Harder to Steer
+
+The initial analysis looked at raw logit differences for the three concepts, corribility, self-awareness, and sycohphancy for 4 models, Qwen 4B, 8B, 14B, and 32B. All the models went though a similar pre-training process. For post-train the 32B model went through a full RL pipeline and the smaller models were post-train distilled presumably from the 32B outputs. 
+
+The intial results seemed to indicate that there was a differnece in steering vector efficacy depending on model training. The distilled models all had 2X or more average logit differences compared to the ful RL 32B model.
+
+| Model | Training | Avg Logit Diff |
+|-------|----------|-----------|
+| 4B | Distilled | 9.15 |
+| 14B | Distilled | 7.54 |
+| 8B | Distilled | 6.03 |
+| 32B | Full RL | 2.96 |
+
+To expand on the data, I repeated the same experiments with the two Qwen3 MoE models, 30B-A3 (30 billion parameters, 3 billion active at a time) and 235B-A22B (235 billion parameters, 22 billion active at a time). The 235B model, like the 32B dense model, went through the full RL post-train pipeline, and the 30B model was distilled from the 235B model. The story seemed to repeat itself, over those datasets the 30B-A3B model has a mean logit diff of 9.30 and the full RL 235B-A22B model was 5.64. It does seem that training method, specifically RL, could impact steering vector efficacy. 
