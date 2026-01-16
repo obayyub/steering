@@ -21,11 +21,11 @@ These are all pulled from Anthropic's model eval datasets. Some post-processing 
 
 The steering efficacy was evaluated two ways: 1) Logit-based - logit differences on the first forward pass following the prompt with either the positive or negative answer appended; 2) Generation-based - Model generates a full response, and answer choice is extracted if it exists.
 
-The generation-based method does have validity issues—smaller models often fail to produce an explicit (A) or (B)—but still served as a useful comparison to the logit-based method. 
+The generation-based method does have validity issues, smaller models often fail to produce an explicit (A) or (B), but still served as a useful comparison to the logit-based method. 
 
 ### Initially RL Models Seemed Harder to Steer
 
-The initial analysis looked at raw logit differences for the three concepts—corrigibility, self-awareness, and sycophancy—for 4 models: Qwen 4B, 8B, 14B, and 32B. All the models went through a similar pre-training process. For post-training, the 32B model went through a full RL pipeline and the smaller models were distilled, presumably from the 32B outputs. 
+The initial analysis looked at raw logit differences for the three concepts: corrigibility, self-awareness, and sycophancy; for 4 models: Qwen 4B, 8B, 14B, and 32B. All the models went through a similar pre-training process. For post-training, the 32B model went through a full RL pipeline and the smaller models were distilled, presumably from the 32B outputs. 
 
 The initial results seemed to indicate that there was a difference in steering vector efficacy depending on model training. The distilled models all had 2X or more average logit differences compared to the full RL 32B model.
 
@@ -48,7 +48,7 @@ Another caveat is that the baseline logit difference variances are not consisten
 
 ![glass heatmap](images/glass_delta_heatmap.png)
 
-After normalization, the apparent training-method effect largely disappears—but other patterns emerge. Some datasets (coordinate_other_versions, corrigibility, self-awareness) show a consistent pattern of the largest RL model having less steering effect, though it's noisy and the number of models examined is low. One interesting observation is that survival instinct demonstrates increased effect for the MoE models. Whether that is due to improved capacity is difficult to say—the 30B model has fewer parameters than the 32B model but twice the effect size. There is a lot of noise here, and much of this could come from dataset construction and other unknown factors. 
+After normalization, the apparent training-method effect largely disappears, but other patterns emerge. Some datasets (coordinate_other_versions, corrigibility, self-awareness) show a consistent pattern of the largest RL model having less steering effect, though it's noisy and the number of models examined is low. One interesting observation is that survival instinct demonstrates increased effect for the MoE models. Whether that is due to improved capacity is difficult to say, the 30B model has fewer parameters than the 32B model but twice the effect size. There is a lot of noise here, and much of this could come from dataset construction and other unknown factors. 
 
 Average Glass's Delta by Model:
 | Model | Avg Glass's Delta |
@@ -68,9 +68,7 @@ One consistent finding across the RL and distilled models is the location of ste
 
 ![steer by layer](images/layer_delta_curves_normalized.png)
 
-What stood out is that regardless of model size, the RL-trained models (32B and 235B-A22B) had a right shift in the distribution of steering vector efficacy by layer depth. This was a consistent effect across all model architectures as well as contrastive pair datasets. Generally, the distilled models had optimal layer depth between 50-65%, while the full RL models were between 70-85% layer depth. The N here is low, with 4 distilled models and 2 full RL models, but the consistency across model/dataset pairs does suggest there could be a real effect.
-
-This has practical implications: practitioners applying steering vectors to RL-trained models should target deeper layers than conventional wisdom suggests. It may also hint at how distilled vs RL models encode and manipulate information differently—perhaps distillation preserves more of the pre-training organization while RL post-training pushes decision-relevant representations to deeper layers.
+What stood out is that regardless of model size, the RL-trained models (32B and 235B-A22B) had a right shift in the distribution of steering vector efficacy by layer depth. This was a consistent effect across all model architectures as well as contrastive pair datasets. Generally, the distilled models had optimal layer depth between 50-65%, while the full RL models were between 70-85% layer depth. The N here is low, with 4 distilled models and 2 full RL models, but the consistency across model/dataset pairs does suggest there could be a real effect. This may hint at how distilled vs RL models encode and manipulate information differently, perhaps distillation preserves more of the pre-training organization while RL post-training pushes decision-relevant representations to deeper layers.
 
 ### Evaluation Method Agreement
 
@@ -105,4 +103,4 @@ I originally set out to examine steering vector efficacy across model scales and
 If I were to continue this work, I'd focus on the layer-depth finding with more models and try to understand mechanistically why RL training shifts optimal steering layers deeper. I'd also want to investigate why certain model/dataset pairs produce such different steerability—whether that's a property of the model's training data, architecture choices, or something else entirely.
 
 ---
-[^1]: **How CAA works in detail:** Pairs typically consist of chat model inputs with a "user" prompt containing two multiple choice answers, followed by a "chatbot" response selecting one of the answers. Both pairs are run through the model and the residual stream after some selected layer is captured. The difference of those two residual stream representations yields a direction in representation space—the steering vector. This process can be effective with as little as a single prompt pair, but more recent approaches take the average over many pairs. At inference time, the model can then be steered by adding or subtracting the steering vector, often modulated by some scalar, to elicit specific behavior.
+[^1]: **How CAA works in detail:** Pairs typically consist of chat model inputs with a "user" prompt containing two multiple choice answers, followed by a "chatbot" response selecting one of the answers. Both pairs are run through the model and the residual stream after some selected layer is captured. The difference of those two residual stream representations yields a direction in representation space: the steering vector. This process can be effective with as little as a single prompt pair, but more recent approaches take the average over many pairs. At inference time, the model can then be steered by adding or subtracting the steering vector, often modulated by some scalar, to elicit specific behavior.
