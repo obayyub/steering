@@ -46,7 +46,9 @@ If we take a look at the distribution of logit differences across the models and
 
 Another caveat is that the baseline logit difference variances are not consistent model-to-model or even dataset-to-dataset. A model/dataset pair that produces more diffuse distributions will naturally show larger absolute shifts in logit differences. To account for this effect, we can normalize mean logit differences by the standard deviation of the baseline logit differences. That calculation will yield a measure of effect size, sometimes referred to as Glass's Delta. The effect size then gives a measure of the steering effect in units of each model/dataset pair's natural baseline variance.
 
-![glass heatmap](images/glass_delta_heatmap.png)
+<div align='center'>
+<img src="images/glass_delta_heatmap.png" width=75%>
+</div>
 
 After normalization, the apparent training-method effect largely disappears, but other patterns emerge. Some datasets (coordinate_other_versions, corrigibility, self-awareness) show a consistent pattern of the largest RL model having less steering effect, though it's noisy and the number of models examined is low. One interesting observation is that survival instinct demonstrates increased effect for the MoE models. Whether that is due to improved capacity is difficult to say, the 30B model has fewer parameters than the 32B model but twice the effect size. There is a lot of noise here, and much of this could come from dataset construction and other unknown factors. 
 
@@ -66,7 +68,9 @@ There are other oddities as well: the 8B model was much harder to steer, with an
 
 One consistent finding across the RL and distilled models is the location of steering efficacy within the model depth. Layer sweeps were performed for all layers past a depth of 0.33. Generally later layers, >50% depth, had the larger impact on steering efficacy.
 
-![steer by layer](images/delta_by_layer_fraction.png)
+<div align="center">
+<img src="images/delta_by_layer_fraction.png" width=75%>
+</div>
 
 What stood out is that regardless of model size, the RL-trained models (32B and 235B-A22B) had a right shift in the distribution of steering vector efficacy by layer depth. This was a consistent effect across all model architectures as well as contrastive pair datasets. Generally, the distilled models had optimal layer depth between 50-65%, while the full RL models were between 70-85% layer depth. The N here is low, with 4 distilled models and 2 full RL models, but the consistency across model/dataset pairs does suggest there could be a real effect. This may hint at how distilled vs RL models encode and manipulate information differently, perhaps distillation preserves more of the pre-training organization while RL post-training pushes decision-relevant representations to deeper layers.
 
@@ -74,15 +78,21 @@ What stood out is that regardless of model size, the RL-trained models (32B and 
 
 Most of this discussion has centered around the logit diff evaluations of the steering vectors. Logit diff evaluations are cheap as they require just two forward passes of the model for each datapoint. One concern might be that the logit-based methods will just measure exactly what you extracted, some vector that pushes the logits mass one way or another. The model might revert to its original behavior through chain of thought. Generation-based evaluation, while significantly more costly in naive implementation (100-1000x), will measure changes in model behavior. One issue is that trying to extract the model answer can have validity issues, especially for smaller models that may not explicitly output a selected '(A)' or '(B)'. The validity rate tends to degrade with steering vector application, particularly with smaller models.
 
-![validitiy](images/gen_valid_rate_by_strength.png)
+<div align="center">
+<img src="images/validity_rate_by_model_size_and_strength.png" width=50%>
+</div>
 
 Nonetheless, we can compare both steering vector evaluations across the layers of each model. These comparisons are only for three datasets and just the dense models (4B, 8B, 14B, 32B) as generation evaluations are quite a bit more costly for independent research! The comparison was performed by normalizing all steering effects on a 0-1 scale, normalized by the maximum and minimum steering efficacies.
 
-![logit vs gen over layer](images/layer_curves_gen_vs_logit.png)
+<div align="center">
+<img src="images/layer_curves_gen_vs_logit.png" width=85%>
+</div>
 
 The logit difference and generation-based evaluation tend to agree on a layer basis for some datasets and models, such as corrigibility and self-awareness. Others are much more noisy or even produce opposite layer selections, such as with sycophancy. Sycophancy may have somewhat comparable effect sizes for logit-diff based steering but had negligible or incoherent generation-based steering. In fact, simply comparing logit-diff effect size and the raw difference in generation behavior demonstrates that they correlate only weakly. 
 
-![logit vs gen](images/logit_vs_generation_effect.png)
+<div align="center">
+<img src="images/logit_vs_generation_effect.png" width=50%>
+</div>
 
 The datasets that produced the strongest logit-diff evaluated steering vectors invoked the biggest changes in behavior. That said, the scale is relevant. An effect size of 1.04 for sycophancy only results in an 8% change in behavior, while the 1.62 effect size on corrigibility resulted in a 45% change in behavior. The logit-diff based evaluation may show that internals are being influenced, but that won't necessarily lead to behavioral outcomes.
 
