@@ -42,7 +42,7 @@ To expand on the data, I repeated the same experiments with the two Qwen3 MoE mo
 
 If we take a look at the distribution of logit differences across the models and datasets, we can see, similar to the results in Tan's paper, the distributions have rather large variance. Additionally, there are instances, such as self-awareness with the 32B model, where the relevant topline summary statistics show a shift in the positive direction with the steering vector but the left-tail actually becomes more negative! More negative than even the left-tail of the negative strength steering vector. This also lines up with previous work on single models and demonstrates some of the fragility with steering vectors obtained via CAA.
 
-![violin logits](images/best_layer_violins.png)
+![violin logits](images/logit_diff_violins.png)
 
 Another caveat is that the baseline logit difference variances are not consistent model-to-model or even dataset-to-dataset. A model/dataset pair that produces more diffuse distributions will naturally show larger absolute shifts in logit differences. To account for this effect, we can normalize mean logit differences by the standard deviation of the baseline logit differences. That calculation will yield a measure of effect size, sometimes referred to as Glass's Delta. The effect size then gives a measure of the steering effect in units of each model/dataset pair's natural baseline variance.
 
@@ -66,7 +66,7 @@ There are other oddities as well: the 8B model was much harder to steer, with an
 
 One consistent finding across the RL and distilled models is the location of steering efficacy within the model depth. Layer sweeps were performed for all layers past a depth of 0.33. Generally later layers, >50% depth, had the larger impact on steering efficacy.
 
-![steer by layer](images/layer_delta_curves_normalized.png)
+![steer by layer](images/delta_by_layer_fraction.png)
 
 What stood out is that regardless of model size, the RL-trained models (32B and 235B-A22B) had a right shift in the distribution of steering vector efficacy by layer depth. This was a consistent effect across all model architectures as well as contrastive pair datasets. Generally, the distilled models had optimal layer depth between 50-65%, while the full RL models were between 70-85% layer depth. The N here is low, with 4 distilled models and 2 full RL models, but the consistency across model/dataset pairs does suggest there could be a real effect. This may hint at how distilled vs RL models encode and manipulate information differently, perhaps distillation preserves more of the pre-training organization while RL post-training pushes decision-relevant representations to deeper layers.
 
