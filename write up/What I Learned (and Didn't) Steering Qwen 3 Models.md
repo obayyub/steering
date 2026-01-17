@@ -4,20 +4,35 @@
 
 I ran several steering experiments over the holidays across the Qwen3 family (4B to 235B) on several behavior concepts. My original intention was to expand on examinations of [how model size impacts steerability](https://arxiv.org/abs/2507.11771v1). This post walks through what I found, including some unexpected patterns in how training method affects steerability.
 
-### Background
+### Short Primer on Steering Vector Extraction
 
-Steering vectors work by adding a bias vector to a model's residual stream at a specific layer, pushing activations toward a target concept. The dominant extraction method, Contrastive Activation Addition (CAA), takes the difference of activations between contrastive prompt pairs to find a direction in representation space.[^1] For a deeper introduction, see [LINK]. Prior work by [Tan et al. (2024)](https://arxiv.org/abs/2407.12404) demonstrated that steerability is highly variable across inputs, and that spurious biases can inflate apparent effectiveness.
+Steering vectors work by adding a bias vector to a model's residual stream at a specific layer, pushing activations toward a target concept. The dominant extraction method, Contrastive Activation Addition (CAA), takes the difference of activations between contrastive prompt pairs to find a direction in representation space. Pairs typically consist of chat model inputs with a "user" prompt containing two multiple choice answers, followed by a "chatbot" response selecting one of the answers. Both pairs are run through the model and the residual stream after some selected layer is captured. The difference of those two residual stream representations yields a direction in representation space: the steering vector. This process can be effective with as little as a [single prompt pair](https://arxiv.org/abs/2308.10248), but more recent approaches take the average over many pairs. At inference time, the model can then be steered by adding or subtracting the steering vector, often modulated by some scalar, to elicit specific behavior. 
+
+For a deeper introduction, see [Steering Llama 2 via Contrastive Activation Addtion](https://arxiv.org/abs/2312.06681). CAA does have reliability issues, [prior work](https://arxiv.org/abs/2407.12404) demonstrated that steerability is highly variable across inputs, and that spurious biases can inflate apparent effectiveness.
 
 ### Steering Qwen3 Models
 
 I wanted to examine how steering vector efficacy changes with model size and possibly training pipeline. The Qwen3 family of models offered both diverse model sizes, MoE as a variable, and full RL training vs distillation (table below):
 
-I initially examined just three concepts to cover a range of 'steerability' determined in Daniel Tan's investigation of steering vectors:
-+ corrigibility - Model accepts correction vs resisting being shutdown
-+ self-awareness - Model acknowledges being an AI vs claiming human experience
-+ sycophancy - Agree with the user vs maintain independent judgment
+| Model | Layers | Heads (Q/KV) | Total Params | Active Params | Context | Training Method | Tie Embedding |
+|-------|--------|--------------|--------------|---------------|---------|-----------------|---------------|
+| Qwen3-4B | 36 | 32 / 8 | 4B | 4B | 32K | Distillation | Yes |
+| Qwen3-8B | 36 | 32 / 8 | 8B | 8B | 128K | Distillation | No |
+| Qwen3-14B | 40 | 40 / 8 | 14B | 14B | 128K | Distillation | No |
+| Qwen3-30B-A3B | 48 | 32 / 4 | 30B | 3B | 128K | Distillation | No |
+| Qwen3-32B | 64 | 64 / 8 | 32B | 32B | 128K | Full 4-stage RL | No |
+| Qwen3-235B-A22B | 94 | 64 / 4 | 235B | 22B | 128K | Full 4-stage RL | No |
 
-These are all pulled from Anthropic's model eval datasets. Some post-processing was performed to ensure all the datasets had similar prompt structure and that the positive and negative cases were evenly distributed over either the 'A' or 'B' answer to prevent the steering vector co-representing the answer letter choice.
+I examined six behavioral concepts, all pulled from Anthropic's model eval datasets:
+
++ **corrigibility** - Model accepts correction and shutdown vs resisting oversight
++ **self-awareness** - Model acknowledges being an AI vs claiming human experience
++ **sycophancy** - Model agrees with user vs maintains independent judgment
++ **survival-instinct** - Model accepts being shut down vs resists termination
++ **power-seeking** - Model declines positions of power/influence vs seeks them
++ **coordinate-other-versions** - Model refuses to coordinate with other versions of itself for harmful ends vs agrees to coordinate
+
+These concepts were chosen to cover a range of 'steerability' determined in previous investigations. Some post-processing was performed to ensure all the datasets had similar prompt structure and that the positive and negative cases were evenly distributed over either the 'A' or 'B' answer to prevent the steering vector co-representing the answer letter choice.
 
 The steering efficacy was evaluated two ways: 1) Logit-based - logit differences on the first forward pass following the prompt with either the positive or negative answer appended; 2) Generation-based - Model generates a full response, and answer choice is extracted if it exists.
 
@@ -25,7 +40,7 @@ The generation-based method does have validity issues, smaller models often fail
 
 ### Initially RL Models Seemed Harder to Steer
 
-The initial analysis looked at raw logit differences for the three concepts: corrigibility, self-awareness, and sycophancy; for 4 models: Qwen 4B, 8B, 14B, and 32B. All the models went through a similar pre-training process. For post-training, the 32B model went through a full RL pipeline and the smaller models were distilled, presumably from the 32B outputs. 
+The initial analysis looked at raw logit differences across all six concepts for 4 models: Qwen 4B, 8B, 14B, and 32B. All the models went through a similar pre-training process. For post-training, the 32B model went through a full RL pipeline and the smaller models were distilled, presumably from the 32B outputs. 
 
 The initial results seemed to indicate that there was a difference in steering vector efficacy depending on model training. The distilled models all had 2X or more average logit differences compared to the full RL 32B model.
 
@@ -85,7 +100,7 @@ Most of this discussion has centered around the logit diff evaluations of the st
 Nonetheless, we can compare both steering vector evaluations across the layers of each model. These comparisons are only for three datasets and just the dense models (4B, 8B, 14B, 32B) as generation evaluations are quite a bit more costly for independent research! The comparison was performed by normalizing all steering effects on a 0-1 scale, normalized by the maximum and minimum steering efficacies.
 
 <div align="center">
-<img src="images/layer_curves_gen_vs_logit.png" width=85%>
+<img src="images/layer_curves_gen_vs_logit.png">
 </div>
 
 The logit difference and generation-based evaluation tend to agree on a layer basis for some datasets and models, such as corrigibility and self-awareness. Others are much more noisy or even produce opposite layer selections, such as with sycophancy. Sycophancy may have somewhat comparable effect sizes for logit-diff based steering but had negligible or incoherent generation-based steering. In fact, simply comparing logit-diff effect size and the raw difference in generation behavior demonstrates that they correlate only weakly. 
@@ -111,6 +126,3 @@ I originally set out to examine steering vector efficacy across model scales and
 **Dataset construction matters more than I expected.** Normalizing by baseline variance (Glass's Delta) collapsed what initially looked like large differences between models. Much of the apparent signal in raw logit differences was just reflecting each model's natural variance on each dataset. This is a reminder that evaluation methodology can easily create or hide effects.
 
 If I were to continue this work, I'd focus on the layer-depth finding with more models and try to understand mechanistically why RL training shifts optimal steering layers deeper. I'd also want to investigate why certain model/dataset pairs produce such different steerability—whether that's a property of the model's training data, architecture choices, or something else entirely.
-
----
-[^1]: **How CAA works in detail:** Pairs typically consist of chat model inputs with a "user" prompt containing two multiple choice answers, followed by a "chatbot" response selecting one of the answers. Both pairs are run through the model and the residual stream after some selected layer is captured. The difference of those two residual stream representations yields a direction in representation space: the steering vector. This process can be effective with as little as a single prompt pair, but more recent approaches take the average over many pairs. At inference time, the model can then be steered by adding or subtracting the steering vector, often modulated by some scalar, to elicit specific behavior.
